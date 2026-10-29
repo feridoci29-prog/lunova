@@ -29,7 +29,7 @@ function fallbackLanding(){return `<div class="space public">${cosmic()}${public
  * If the reference image has not been uploaded, use semantic CSS fallback.
  */
 function landing(){
-  return \`<div class="landing-exact" aria-label="LUNOVA">
+  return `<div class="landing-exact" aria-label="LUNOVA">
     <div class="reference-stage">
       <img class="reference-image" src="./lunova-landing-reference.webp"
        alt="" aria-hidden="true" decoding="async"
@@ -49,8 +49,8 @@ function landing(){
         <button class="ref-link ref-email" data-nav="signup" aria-label="Continue with Email"></button>
       </div>
     </div>
-    <div class="landing-fallback">\${fallbackLanding()}</div>
-  </div>\`;
+    <div class="landing-fallback">${fallbackLanding()}</div>
+  </div>`;
 }
 function auth(which){const up=which==='signup';return `<div class="space public">${cosmic()}${publicHeader()}<div class="auth-layout"><section class="auth-copy"><div class="eyebrow">${up?'START CREATING':'WELCOME BACK'}</div><h1>${up?'Your Ideas.': 'Continue'}<br><span class="grad">${up?'Your Universe.':'Your Vision.'}</span></h1><p>${up?'Create websites, code and projects in one workspace.':'Return to your LUNOVA projects and keep building.'}</p><div class="row muted">✧ &nbsp; Imagine. Build. Create.</div></section><section class="auth-card"><div style="text-align:center">${brand()}<h2 style="margin-top:18px">${up?'Create your account':'Log in to your account'}</h2><p>${up?'Start building for free.':'Welcome back to LUNOVA.'}</p></div>${socialButtons()}<div class="divider"></div><form id="auth-form" class="form-row">${up?'<input class="field" name="username" placeholder="Username" required maxlength="80">':''}<input class="field" type="email" name="email" placeholder="Email address" required><input class="field" type="password" name="password" placeholder="Password" required minlength="6"><button type="submit" class="primary wide">${up?'Create demo account':'Enter demo workspace'} →</button></form><p class="hint">Prototype only: no real account or password is stored. Use Demo to explore the workspace.</p><div style="text-align:center"><button class="small ghost" data-nav="${up?'login':'signup'}">${up?'Already have an account? Log in':'Need an account? Sign up'}</button></div></section></div></div>`;}
 function sidebar(){const links=[['dashboard','Home'],['workspace','AI Workspace'],['projects','Projects'],['templates','Templates'],['pricing','Pricing'],['shared','Shared Projects'],['settings','Settings']];return `<aside class="sidebar">${brand()}<nav class="side-nav">${links.map(([id,label])=>`<button class="${state.page===id?'active':''}" data-nav="${id}"><span>${icon[id]||'◎'} &nbsp;</span>${label}</button>`).join('')}</nav><div class="side-bottom"><div class="glass"><strong>♕ Free Prototype</strong><p class="muted" style="font-size:12px;margin:8px 0 12px">Explore the experience before connecting production services.</p><button class="small wide" data-nav="pricing">View plans</button></div><p style="font-size:12px;margin-top:15px">☾ &nbsp; ${E(store.profile.name)}</p></div></aside>`;}
