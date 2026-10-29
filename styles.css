@@ -95,3 +95,49 @@ button,.btn{border:1px solid var(--border);color:#f5f8ff;background:#101a32;padd
  .landing-fallback .space.public .topbar .navlinks{display:none}
  .landing-fallback .space.public .landing-main{min-height:700px}
 }
+
+
+/* Approved LUNOVA landing v3: real typography, buttons, layout.
+   Reference artwork is only atmospheric background, NEVER the UI. */
+.approved-landing{position:relative;isolation:isolate;min-height:100svh;background:#030816;color:#f7f9ff;overflow:hidden;display:flex;flex-direction:column}
+.approved-visual{position:absolute;inset:0;z-index:-2;background:url("./lunova-landing-reference.webp") center center/cover no-repeat;filter:contrast(1.08) saturate(1.06)}
+.approved-landing:before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(180deg,#020611bf 0%,transparent 15%,transparent 76%,#01050cb8 100%);}
+.approved-title-scrim{position:absolute;top:12%;left:27%;width:47%;height:29%;z-index:-1;pointer-events:none;background:radial-gradient(ellipse at center,rgba(3,9,23,.97) 0%,rgba(3,9,23,.9) 45%,rgba(3,9,23,.55) 66%,transparent 80%)}
+.approved-header{position:relative;z-index:2;min-height:76px;display:grid;grid-template-columns:1fr 2fr 1fr;align-items:center;gap:12px;padding:0 clamp(23px,6.4vw,110px);background:linear-gradient(180deg,#020712f5 0%,#020712ce 80%,transparent);box-sizing:border-box}
+.approved-logo{width:max-content;color:#f2f4fb;font-weight:300;font-size:clamp(17px,1.42vw,23px);letter-spacing:.44em;line-height:1.4}
+.approved-logo span{display:inline-block;color:#d2e0fa;filter:drop-shadow(0 0 5px #b8d5ff);font-weight:200}
+.approved-main-nav{display:flex;gap:clamp(14px,2.8vw,40px);align-items:center;justify-content:center}
+.approved-main-nav button,.approved-lang{color:#e9ebf5;border:none;background:transparent;padding:10px 0;border-radius:0;font-size:clamp(12px,.86vw,14px);box-shadow:none}
+.approved-main-nav button:hover,.approved-lang:hover{color:#fff;background:transparent;transform:none;text-shadow:0 0 8px #799cff}
+.approved-main-nav button.active{position:relative}
+.approved-main-nav button.active:after{content:"";position:absolute;bottom:0;left:-2px;right:-2px;height:2px;background:#97b0ff;box-shadow:0 0 12px 2px #607cfa}
+.approved-lang{justify-self:end;display:flex;gap:11px;align-items:center;letter-spacing:.03em}
+.approved-lang span:first-child{font-size:21px}
+.approved-hero{width:100%;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;text-align:center;padding:clamp(40px,7vh,86px) 20px 50px}
+.approved-kicker{font-size:11px;letter-spacing:.37em;color:#bdc9e5;font-weight:400}
+.approved-hero h1{font-size:clamp(39px,3.65vw,66px);font-weight:350;line-height:1.16;letter-spacing:-.03em;color:#f5f7ff;margin:18px 0 13px;text-shadow:0 2px 16px #090d1980}
+.approved-hero h1 span{color:#99b9f2}
+.approved-hero>p{font-size:clamp(13px,1.03vw,17px);color:#dce3f3;line-height:1.5;font-weight:400;margin:0;max-width:550px;text-shadow:0 1px 8px #030b1e}
+.approved-auth{position:relative;width:min(100%,420px);margin-top:clamp(20px,3.3vh,34px);padding:25px 35px 23px;border:1px solid #b7d1ff8c;border-radius:20px;background:linear-gradient(160deg,rgba(83,106,149,.93),rgba(19,28,49,.97) 68%,rgba(14,21,36,.98));box-shadow:0 14px 60px #000a,0 0 30px #8cbcff25;backdrop-filter:blur(19px)}
+.approved-auth h2{font-size:23px;letter-spacing:-.025em;font-weight:500;line-height:1.25;color:#fff;margin:0}
+.approved-subheading{color:#e0e6f4;font-size:13px;margin-top:5px}
+.approved-buttons{display:flex;flex-direction:column;gap:10px;margin-top:23px}
+.approved-buttons button{width:100%;min-height:47px;border:1px solid #52617d;border-radius:11px;background:linear-gradient(160deg,#0e1729,#131d2c);color:#f4f7fc;display:flex;align-items:center;justify-content:center;gap:10px;font-weight:400;font-size:13px;padding:9px 14px;box-shadow:none}
+.approved-buttons button:hover{border-color:#adc3ff;background:#1f2d49;transform:none}
+.approved-buttons button span{font-size:17px;min-width:21px;text-align:center}
+.approved-buttons button.approved-google{background:#fcfcff;color:#1e2430;font-weight:600;border-color:#e4e9f4}
+.approved-buttons button.approved-google:hover{background:#f2f6ff}
+.google-g{font-family:Arial,sans-serif;font-weight:800;font-size:21px!important;background:conic-gradient(#4285f4 0deg 88deg,#34a853 90deg 177deg,#fbbc05 180deg 270deg,#ea4335 274deg);background-clip:text;-webkit-text-fill-color:transparent}
+.approved-github-icon{font-weight:bold;color:#eef2ff}
+.approved-or{display:flex;align-items:center;gap:13px;color:#c0cae1;font-size:11px;justify-content:center;margin:22px 0 12px}
+.approved-or span{height:1px;background:#64728e;flex:1;opacity:.64}
+.approved-terms{font-size:10px;line-height:1.65;color:#cad3e7;margin:0}
+.approved-terms button{border:0;background:transparent;color:#e3eaff;text-decoration:underline;padding:0;font-size:inherit;box-shadow:none}
+.approved-terms button:hover{background:transparent;transform:none;color:#fff}
+.approved-footer{z-index:1;position:relative;display:grid;grid-template-columns:repeat(4,1fr);align-items:center;gap:20px;padding:23px clamp(22px,8vw,160px) 28px;min-height:95px;background:linear-gradient(0deg,#01040cf5,#02060ed4)}
+.approved-footer>div{display:flex;align-items:center;gap:14px;min-width:0}
+.approved-feature-icon{width:43px;height:43px;flex-shrink:0;border-radius:12px;border:1px solid #657da354;background:#0b1427e0;display:flex;align-items:center;justify-content:center;font-size:24px;box-shadow:0 0 14px #80aaff19}
+.approved-footer b{font-weight:550;font-size:13px;white-space:nowrap}
+.approved-footer small{display:block;color:#a9b3cd;font-size:11px;line-height:1.4;margin-top:4px}
+@media(max-width:930px){.approved-header{grid-template-columns:1fr auto}.approved-main-nav{grid-row:2;grid-column:1/3;justify-content:space-evenly;gap:14px;padding-bottom:9px}.approved-header{padding-top:10px}.approved-hero{padding-top:30px}.approved-footer{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.approved-header{min-height:54px;padding:12px 17px}.approved-main-nav{display:none}.approved-hero{padding:48px 15px 40px}.approved-hero h1{font-size:39px}.approved-desktop-break{display:none}.approved-visual{background-size:auto 100%;background-position:62% center}.approved-title-scrim{top:12%;left:0;width:100%;height:38%}.approved-auth{padding:25px 20px;width:min(100%,380px)}.approved-footer{gap:14px;padding:18px 20px 24px}.approved-feature-icon{width:35px;height:35px;font-size:19px}.approved-footer b{font-size:12px}.approved-footer small{font-size:10px}}
