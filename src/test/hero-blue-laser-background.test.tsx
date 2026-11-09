@@ -64,4 +64,3 @@ describe("HeroBlueLaserBackground Component", () => {
     expect(() => unmount()).not.toThrow();
   });
 });
-

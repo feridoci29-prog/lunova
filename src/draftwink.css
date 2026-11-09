@@ -100,6 +100,7 @@ select {
   position: relative;
   isolation: isolate;
   min-height: 100dvh;
+  background: #050507;
 }
 .dw-page > .draft-atmosphere,
 .dw-page > .hero-laser-background {
