@@ -1,0 +1,12 @@
+{
+  "name": "lunova",
+  "compatibility_date": "2026-10-28",
+  "main": ".output/server/index.mjs",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": {
+    "directory": "./.output/public",
+    "binding": "ASSETS",
+    "not_found_handling": "none",
+    "run_worker_first": true
+  }
+}

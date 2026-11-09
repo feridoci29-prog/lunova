@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 40">
+  <title>Draftwink</title>
+  <path d="M5 4h18l9 9v15c0 5-4 8-9 8H5V4Z" fill="#91B8FF"/>
+  <path d="M23 4v9h9" fill="#c9dbff"/>
+  <path d="M5 35 16 25c5 1 8-2 8-7V5" fill="none" stroke="#0B0E14" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
