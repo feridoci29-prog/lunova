@@ -17,6 +17,8 @@ export const BLOB_RADIUS = 55; // Base radius of the main cursor blob (px)
 export const DROPLET_CHANCE = 0.12; // Probability of spawning satellite droplets per step
 export const EASING = 0.15; // Pointer lerp easing factor (fluid & laggy feel)
 export const IMAGE_URL = "/assets/smoke.jpg"; // Path to the colorful reveal image
+export const IDLE_TIMEOUT = 1200; // ms of no movement before blob starts shrinking
+export const SHRINK_SPEED = 0.06; // How fast the blob scales to 0 when idle (lerp factor)
 
 export interface LiquidCursorOptions {
   canvas: HTMLCanvasElement;
@@ -26,6 +28,8 @@ export interface LiquidCursorOptions {
   blobRadius?: number;
   dropletChance?: number;
   easing?: number;
+  idleTimeout?: number;
+  shrinkSpeed?: number;
 }
 
 interface TrailCircle {
@@ -59,6 +63,8 @@ export function initLiquidCursor(options: LiquidCursorOptions) {
     blobRadius = BLOB_RADIUS,
     dropletChance = DROPLET_CHANCE,
     easing = EASING,
+    idleTimeout = IDLE_TIMEOUT,
+    shrinkSpeed = SHRINK_SPEED,
   } = options;
 
   const ctx = canvas.getContext("2d", { alpha: true });
@@ -148,8 +154,11 @@ export function initLiquidCursor(options: LiquidCursorOptions) {
   window.addEventListener("pointerdown", onPointerMove, { passive: true });
   document.addEventListener("mouseleave", onPointerLeave);
 
-  // Auto-drifting blob on touch or idle visitors (Requirement 9)
-  let autoTime = 0;
+  // ---- FIX: Global scale factor for smooth fade-in / fade-out ----
+  // blobScale lerps to 1 while mouse is active, to 0 when idle/gone.
+  // All radii are multiplied by this so the blob shrinks cleanly to nothing
+  // rather than freezing in place when the mouse stops.
+  let blobScale = 0;
 
   // Helper: Draw image with object-fit: cover and parallax
   const drawCoverImage = (
@@ -189,18 +198,19 @@ export function initLiquidCursor(options: LiquidCursorOptions) {
 
     const elapsed = (now - startTime) * 0.001;
 
-    // 1. POINTER EASING WITH LERP (Fluid, laggy feel)
-    const isIdle = now - lastMoveTime > 2500 && !isPointerInside;
+    // 1. DETERMINE ACTIVE / IDLE STATE
+    // "active" = pointer is inside the window AND moved recently
+    const timeSinceMove = now - lastMoveTime;
+    const isActive = isPointerInside && timeSinceMove < idleTimeout;
 
-    if (isIdle) {
-      // Gentle auto-moving organic drift when idle or on mobile
-      autoTime += 0.016;
-      const autoX = width * 0.5 + Math.sin(autoTime * 0.9) * (width * 0.28);
-      const autoY = height * 0.45 + Math.cos(autoTime * 1.3) * (height * 0.18);
-      pointerTargetX = autoX;
-      pointerTargetY = autoY;
-    }
+    // Smoothly lerp blobScale → 1 when active, → 0 when idle/gone.
+    // This is the core fix for the "frozen blob" bug: instead of abruptly
+    // stopping circle spawning, we scale all radii down so the blob
+    // gracefully shrinks to nothing when the cursor leaves or stops.
+    const targetScale = isActive ? 1 : 0;
+    blobScale += (targetScale - blobScale) * shrinkSpeed;
 
+    // 2. POINTER EASING WITH LERP (Fluid, laggy feel)
     if (pointerTargetX > -500) {
       if (pointerCurrentX < -500) {
         pointerCurrentX = pointerTargetX;
@@ -213,8 +223,10 @@ export function initLiquidCursor(options: LiquidCursorOptions) {
       }
     }
 
-    // 2. SPAWN CIRCLES ALONG THE TRAIL (Interpolated for smooth continuity)
-    if (pointerCurrentX > -500 && (isPointerInside || isIdle)) {
+    // 3. SPAWN CIRCLES ALONG THE TRAIL only while active
+    // Once inactive we stop spawning — existing circles expire naturally
+    // (they have their own lifetime) so the trail fades without freezing.
+    if (isActive && pointerCurrentX > -500) {
       const dist = Math.hypot(pointerCurrentX - prevX, pointerCurrentY - prevY);
       const stepDist = Math.max(blobRadius * 0.32, 12);
       const steps = Math.max(1, Math.min(Math.ceil(dist / stepDist), 20));
@@ -224,16 +236,16 @@ export function initLiquidCursor(options: LiquidCursorOptions) {
         const interpX = prevX + (pointerCurrentX - prevX) * t;
         const interpY = prevY + (pointerCurrentY - prevY) * t;
 
-        // Add trail circle
+        // Add trail circle – radius scaled by blobScale for smooth fade-in
         trail.push({
           x: interpX,
           y: interpY,
-          radius: blobRadius * (0.85 + Math.random() * 0.3),
+          radius: blobRadius * blobScale * (0.85 + Math.random() * 0.3),
           birth: now,
           lifetime: trailLifetime,
         });
 
-        // 3. SPAWN SATELLITE DROPLETS (Requirement 2)
+        // 4. SPAWN SATELLITE DROPLETS (Requirement 2)
         if (Math.random() < dropletChance) {
           const angle = Math.random() * Math.PI * 2;
           const speed = Math.random() * 2.8 + 1.2;
@@ -242,7 +254,7 @@ export function initLiquidCursor(options: LiquidCursorOptions) {
             y: interpY,
             vx: Math.cos(angle) * speed,
             vy: Math.sin(angle) * speed,
-            radius: blobRadius * (Math.random() * 0.22 + 0.18),
+            radius: blobRadius * blobScale * (Math.random() * 0.22 + 0.18),
             birth: now,
             lifetime: trailLifetime * 0.85,
           });
@@ -253,7 +265,7 @@ export function initLiquidCursor(options: LiquidCursorOptions) {
       prevY = pointerCurrentY;
     }
 
-    // 4. DRAW CIRCLES TO OFFSCREEN MASK CANVAS
+    // 5. DRAW CIRCLES TO OFFSCREEN MASK CANVAS
     maskCtx.clearRect(0, 0, width, height);
 
     let minX = width;
