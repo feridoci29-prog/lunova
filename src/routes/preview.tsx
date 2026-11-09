@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
 import { PublicHeader } from "@/components/draftwink/PublicHeader";
 import { DemoPreview } from "@/components/draftwink/DemoPreview";
-import { MoonBackground } from "@/components/lunova/MoonBackground";
+import { HeroBlueLaserBackground } from "@/components/draftwink/HeroBlueLaserBackground";
 export const Route = createFileRoute("/preview")({
   head: () => ({
     meta: [
@@ -18,7 +18,7 @@ export const Route = createFileRoute("/preview")({
 function Preview() {
   return (
     <div className="dw-page">
-      <MoonBackground variant="top" />
+      <HeroBlueLaserBackground variant="top" />
       <PublicHeader />
       <main className="dw-container dw-full-preview">
         <Link to="/" className="dw-text-link">

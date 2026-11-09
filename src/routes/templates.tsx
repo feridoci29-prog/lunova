@@ -3,7 +3,7 @@ import { useRef, useState } from "react";
 import { PublicHeader } from "@/components/draftwink/PublicHeader";
 import { DemoPreview } from "@/components/draftwink/DemoPreview";
 import { TemplateGallery } from "@/components/draftwink/TemplateGallery";
-import { MoonBackground } from "@/components/lunova/MoonBackground";
+import { HeroBlueLaserBackground } from "@/components/draftwink/HeroBlueLaserBackground";
 import type { DemoProjectId } from "@/lib/demo-projects";
 export const Route = createFileRoute("/templates")({
   head: () => ({
@@ -19,7 +19,7 @@ function Templates() {
   const preview = useRef<HTMLDivElement>(null);
   return (
     <div className="dw-page">
-      <MoonBackground variant="top" />
+      <HeroBlueLaserBackground variant="top" />
       <PublicHeader />
       <main className="dw-container">
         <section className="dw-section">

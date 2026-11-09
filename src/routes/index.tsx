@@ -13,7 +13,7 @@ import {
 import { PublicHeader } from "@/components/draftwink/PublicHeader";
 import { DemoPreview } from "@/components/draftwink/DemoPreview";
 import { TemplateGallery } from "@/components/draftwink/TemplateGallery";
-import { MoonBackground } from "@/components/lunova/MoonBackground";
+import { HeroBlueLaserBackground } from "@/components/draftwink/HeroBlueLaserBackground";
 import { useAuth } from "@/components/lunova/AuthProvider";
 import { rememberDraft, readDraft, clearDraft, draftPrompt } from "@/lib/draft-intent";
 import type { DemoProjectId } from "@/lib/demo-projects";
@@ -107,7 +107,7 @@ function Landing() {
   ] as const;
   return (
     <div className="dw-page">
-      <MoonBackground motion />
+      <HeroBlueLaserBackground variant="hero" />
       <PublicHeader />
       <main>
         <section className="dw-hero">

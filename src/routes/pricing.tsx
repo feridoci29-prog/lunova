@@ -1,12 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Check } from "lucide-react";
 import { PublicHeader } from "@/components/draftwink/PublicHeader";
-import { MoonBackground } from "@/components/lunova/MoonBackground";
+import { HeroBlueLaserBackground } from "@/components/draftwink/HeroBlueLaserBackground";
 export const Route = createFileRoute("/pricing")({
   head: () => ({ meta: [{ title: "Early access — Draftwink" }] }),
   component: () => (
     <div className="dw-page">
-      <MoonBackground motion />
+      <HeroBlueLaserBackground variant="top" />
       <PublicHeader />
       <main className="mx-auto max-w-3xl px-6 py-20 text-center">
         <p className="dw-eyebrow">ROOM FOR YOUR NEXT IDEA</p>
