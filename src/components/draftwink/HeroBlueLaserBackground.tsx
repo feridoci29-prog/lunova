@@ -1,16 +1,27 @@
 import { useEffect, useRef, useState, useId } from "react";
 import { Pause, Play } from "lucide-react";
 import { cn } from "@/lib/utils";
+import {
+  initLiquidCursor,
+  BLUR,
+  TRAIL_LIFETIME,
+  BLOB_RADIUS,
+  DROPLET_CHANCE,
+  EASING,
+  IMAGE_URL,
+} from "@/lib/liquid-cursor";
 
 export interface HeroBlueLaserBackgroundProps {
   /** Page/layout style variant */
   variant?: "hero" | "full" | "top" | "dim";
   /** Optional custom class name */
   className?: string;
-  /** Whether mouse reactive displacement & spotlight are enabled (default: true) */
+  /** Whether mouse reactive displacement & liquid reveal are enabled (default: true) */
   interactive?: boolean;
   /** Whether continuous animation is enabled (default: true) */
   motion?: boolean;
+  /** Path to the colorful reveal image (default: /assets/smoke.jpg) */
+  imageUrl?: string;
   /** Vertical relative anchor for the spotlight center (0 to 1, default: 0.45) */
   hotspotY?: number;
   /** Spotlight & grid line intensity multiplier (default: 1.0) */
@@ -24,12 +35,14 @@ export function HeroBlueLaserBackground({
   className,
   interactive = true,
   motion = true,
+  imageUrl = IMAGE_URL,
   hotspotY = 0.45,
   beamIntensity = 1.0,
   showControls = false,
 }: HeroBlueLaserBackgroundProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const gridCanvasRef = useRef<HTMLCanvasElement>(null);
+  const liquidCanvasRef = useRef<HTMLCanvasElement>(null);
   const [paused, setPaused] = useState(false);
   const [isClient, setIsClient] = useState(false);
   const componentId = useId();
@@ -38,9 +51,38 @@ export function HeroBlueLaserBackground({
     setIsClient(true);
   }, []);
 
+  // ---------------------------------------------------------------------------
+  // 1. LIQUID CURSOR REVEAL EFFECT (Vanilla JS Liquid Engine)
+  // ---------------------------------------------------------------------------
   useEffect(() => {
     if (!isClient) return;
-    const canvas = canvasRef.current;
+    const liquidCanvas = liquidCanvasRef.current;
+    if (!liquidCanvas) return;
+
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!motion || prefersReducedMotion || paused) return;
+
+    const cleanup = initLiquidCursor({
+      canvas: liquidCanvas,
+      imageUrl,
+      blur: BLUR,
+      trailLifetime: TRAIL_LIFETIME,
+      blobRadius: BLOB_RADIUS,
+      dropletChance: DROPLET_CHANCE,
+      easing: EASING,
+    });
+
+    return () => {
+      cleanup();
+    };
+  }, [isClient, motion, paused, imageUrl]);
+
+  // ---------------------------------------------------------------------------
+  // 2. DARK GRID BACKGROUND WITH "+" MARKERS (#08090c)
+  // ---------------------------------------------------------------------------
+  useEffect(() => {
+    if (!isClient) return;
+    const canvas = gridCanvasRef.current;
     const container = containerRef.current;
     if (!canvas || !container) return;
 
@@ -52,20 +94,9 @@ export function HeroBlueLaserBackground({
     }
     if (!ctx) return;
 
-    let animationFrameId = 0;
-    let isVisible = true;
     let width = 0;
     let height = 0;
     let dpr = 1;
-
-    // Smoothed mouse state for gentle spotlight tracking
-    const mouse = {
-      targetX: -1000,
-      targetY: -1000,
-      currentX: -1000,
-      currentY: -1000,
-      active: false,
-    };
 
     const resize = () => {
       if (!container || !canvas || !ctx) return;
@@ -83,53 +114,16 @@ export function HeroBlueLaserBackground({
       ctx.scale(dpr, dpr);
     };
 
-    const handlePointerMove = (e: PointerEvent) => {
-      if (!interactive) return;
-      const rect = container.getBoundingClientRect();
-      mouse.targetX = e.clientX - rect.left;
-      mouse.targetY = e.clientY - rect.top;
-      mouse.active = true;
-    };
-
-    const handlePointerLeave = () => {
-      mouse.active = false;
-      mouse.targetX = -1000;
-      mouse.targetY = -1000;
-    };
-
-    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const shouldAnimate = motion && !prefersReducedMotion && !paused;
-
-    let startTime = performance.now();
-
-    const renderFrame = (now: number) => {
+    const renderGrid = () => {
       if (!ctx || width === 0 || height === 0) return;
-
-      const elapsed = (now - startTime) * 0.001;
-
-      // Smooth mouse lerping
-      if (mouse.active) {
-        if (mouse.currentX < -500) {
-          mouse.currentX = mouse.targetX;
-          mouse.currentY = mouse.targetY;
-        } else {
-          mouse.currentX += (mouse.targetX - mouse.currentX) * 0.08;
-          mouse.currentY += (mouse.targetY - mouse.currentY) * 0.08;
-        }
-      } else {
-        mouse.currentX += (-1000 - mouse.currentX) * 0.05;
-        mouse.currentY += (-1000 - mouse.currentY) * 0.05;
-      }
 
       ctx.clearRect(0, 0, width, height);
 
-      // -------------------------------------------------------------
-      // 1. BASE BACKGROUND: Deepest Onyx / Carbon Pure Black
-      // -------------------------------------------------------------
-      ctx.fillStyle = "#050507";
+      // BASE BACKGROUND: Dark theme #08090c
+      ctx.fillStyle = "#08090c";
       ctx.fillRect(0, 0, width, height);
 
-      // Center subtle ambient spotlight behind the hero title/composer
+      // Center subtle ambient spotlight behind the hero
       const centerX = width * 0.5;
       const spotY = height * hotspotY;
 
@@ -141,30 +135,26 @@ export function HeroBlueLaserBackground({
         spotY,
         Math.min(width, 1100) * 0.65,
       );
-      ambientSpot.addColorStop(0, `rgba(255, 255, 255, ${0.045 * beamIntensity})`);
-      ambientSpot.addColorStop(0.4, `rgba(255, 255, 255, ${0.018 * beamIntensity})`);
-      ambientSpot.addColorStop(0.8, "rgba(255, 255, 255, 0.003)");
+      ambientSpot.addColorStop(0, `rgba(255, 255, 255, ${0.04 * beamIntensity})`);
+      ambientSpot.addColorStop(0.4, `rgba(255, 255, 255, ${0.015 * beamIntensity})`);
+      ambientSpot.addColorStop(0.8, "rgba(255, 255, 255, 0.002)");
       ambientSpot.addColorStop(1, "rgba(0, 0, 0, 0)");
       ctx.fillStyle = ambientSpot;
       ctx.fillRect(0, 0, width, height);
 
-      // -------------------------------------------------------------
-      // 2. FINE MATRIX GRID (Aura / v0 Square Blueprint Grid)
-      // -------------------------------------------------------------
+      // FINE MATRIX GRID (80px blueprint squares)
       const cellSize = width < 768 ? 64 : 80;
       const offsetX = (width % cellSize) * 0.5;
 
       ctx.save();
       ctx.lineWidth = 1;
-      ctx.strokeStyle = `rgba(255, 255, 255, ${0.04 * beamIntensity})`;
+      ctx.strokeStyle = `rgba(255, 255, 255, ${0.038 * beamIntensity})`;
 
       ctx.beginPath();
-      // Vertical grid lines
       for (let x = offsetX; x <= width; x += cellSize) {
         ctx.moveTo(Math.round(x) + 0.5, 0);
         ctx.lineTo(Math.round(x) + 0.5, height);
       }
-      // Horizontal grid lines
       for (let y = 0; y <= height; y += cellSize) {
         ctx.moveTo(0, Math.round(y) + 0.5);
         ctx.lineTo(width, Math.round(y) + 0.5);
@@ -172,38 +162,32 @@ export function HeroBlueLaserBackground({
       ctx.stroke();
       ctx.restore();
 
-      // -------------------------------------------------------------
-      // 3. STRUCTURAL ARCHITECTURAL GUIDE LINES & BOXES (Aura signature)
-      // -------------------------------------------------------------
-      // Structural column positions aligned with content framing
+      // STRUCTURAL ARCHITECTURAL GUIDE LINES
       const structuralCols = [
-        centerX - 640, // 1280px Container Left
-        centerX - 395, // 790px Composer Left
-        centerX, // Exact Center Axis
-        centerX + 395, // 790px Composer Right
-        centerX + 640, // 1280px Container Right
+        centerX - 640, // Container Left
+        centerX - 395, // Composer Left
+        centerX, // Center
+        centerX + 395, // Composer Right
+        centerX + 640, // Container Right
       ];
 
-      // Add outer columns on larger displays
       if (width > 1500) {
         structuralCols.unshift(centerX - 880);
         structuralCols.push(centerX + 880);
       }
 
-      // Structural row positions (header line, hero bands, section break)
       const structuralRows = [
-        88, // Header border bottom line
-        190, // Above hero eyebrow badge
+        88, // Header bottom line
+        190, // Above eyebrow
         340, // Above composer
-        620, // Below composer card
-        840, // Below hero section / suggestions
+        620, // Below composer
+        840, // Section transition
       ];
 
       ctx.save();
       ctx.lineWidth = 1;
-      ctx.strokeStyle = `rgba(255, 255, 255, ${0.08 * beamIntensity})`;
+      ctx.strokeStyle = `rgba(255, 255, 255, ${0.075 * beamIntensity})`;
 
-      // Draw primary structural vertical lines
       ctx.beginPath();
       for (const colX of structuralCols) {
         if (colX >= 0 && colX <= width) {
@@ -212,8 +196,6 @@ export function HeroBlueLaserBackground({
           ctx.lineTo(snapX, height);
         }
       }
-
-      // Draw primary structural horizontal lines
       for (const rowY of structuralRows) {
         if (rowY <= height) {
           const snapY = Math.round(rowY) + 0.5;
@@ -223,10 +205,8 @@ export function HeroBlueLaserBackground({
       }
       ctx.stroke();
 
-      // -------------------------------------------------------------
-      // 4. ARCHITECTURAL INTERSECTION CROSSHAIR (+) MARKERS
-      // -------------------------------------------------------------
-      ctx.strokeStyle = `rgba(255, 255, 255, ${0.32 * beamIntensity})`;
+      // "+" CROSSHAIR MARKERS AT KEY INTERSECTIONS
+      ctx.strokeStyle = `rgba(255, 255, 255, ${0.28 * beamIntensity})`;
       ctx.lineWidth = 1;
       ctx.beginPath();
 
@@ -239,11 +219,8 @@ export function HeroBlueLaserBackground({
           if (rowY > height - 10) continue;
           const snapY = Math.round(rowY) + 0.5;
 
-          // Horizontal arm of cross
           ctx.moveTo(snapX - crossSize, snapY);
           ctx.lineTo(snapX + crossSize, snapY);
-
-          // Vertical arm of cross
           ctx.moveTo(snapX, snapY - crossSize);
           ctx.lineTo(snapX, snapY + crossSize);
         }
@@ -251,99 +228,32 @@ export function HeroBlueLaserBackground({
       ctx.stroke();
       ctx.restore();
 
-      // -------------------------------------------------------------
-      // 5. INTERACTIVE MOUSE SPOTLIGHT (Flashlight Effect)
-      // -------------------------------------------------------------
-      if (mouse.currentX > -500 && interactive) {
-        ctx.save();
-        ctx.globalCompositeOperation = "screen";
-
-        const mSpot = ctx.createRadialGradient(
-          mouse.currentX,
-          mouse.currentY,
-          20,
-          mouse.currentX,
-          mouse.currentY,
-          420,
-        );
-        mSpot.addColorStop(0, `rgba(255, 255, 255, ${0.09 * beamIntensity})`);
-        mSpot.addColorStop(0.35, `rgba(255, 255, 255, ${0.035 * beamIntensity})`);
-        mSpot.addColorStop(0.7, `rgba(255, 255, 255, ${0.008 * beamIntensity})`);
-        mSpot.addColorStop(1, "rgba(0, 0, 0, 0)");
-
-        ctx.fillStyle = mSpot;
-        ctx.beginPath();
-        ctx.arc(mouse.currentX, mouse.currentY, 420, 0, Math.PI * 2);
-        ctx.fill();
-
-        ctx.restore();
-      }
-
-      // -------------------------------------------------------------
-      // 6. BOTTOM GRADIENT SHADE: Seamlessly melt into page content
-      // -------------------------------------------------------------
+      // BOTTOM GRADIENT FADE: Smoothly melt into lower page sections
       if (variant === "hero" || variant === "top") {
         const fadeY = height * 0.76;
         const fadeGrad = ctx.createLinearGradient(0, fadeY, 0, height);
-        fadeGrad.addColorStop(0, "rgba(5, 5, 7, 0)");
-        fadeGrad.addColorStop(0.65, "rgba(5, 5, 7, 0.75)");
-        fadeGrad.addColorStop(1, "rgba(5, 5, 7, 1)");
+        fadeGrad.addColorStop(0, "rgba(8, 9, 12, 0)");
+        fadeGrad.addColorStop(0.65, "rgba(8, 9, 12, 0.75)");
+        fadeGrad.addColorStop(1, "rgba(8, 9, 12, 1)");
 
         ctx.fillStyle = fadeGrad;
         ctx.fillRect(0, fadeY, width, height - fadeY);
       }
-
-      // Loop animation if motion is enabled
-      if (shouldAnimate && isVisible) {
-        animationFrameId = requestAnimationFrame(renderFrame);
-      }
     };
 
-    // Observers & Listeners
     const resizeObserver = new ResizeObserver(() => {
       resize();
-      if (!shouldAnimate) renderFrame(performance.now());
+      renderGrid();
     });
     resizeObserver.observe(container);
 
-    const intersectionObserver = new IntersectionObserver((entries) => {
-      for (const entry of entries) {
-        isVisible = entry.isIntersecting;
-        if (isVisible && shouldAnimate && !animationFrameId) {
-          startTime = performance.now();
-          animationFrameId = requestAnimationFrame(renderFrame);
-        }
-      }
-    });
-    intersectionObserver.observe(container);
-
-    const handleVisibilityChange = () => {
-      if (document.hidden) {
-        cancelAnimationFrame(animationFrameId);
-        animationFrameId = 0;
-      } else if (shouldAnimate && isVisible) {
-        startTime = performance.now();
-        animationFrameId = requestAnimationFrame(renderFrame);
-      }
-    };
-
-    window.addEventListener("pointermove", handlePointerMove, { passive: true });
-    window.addEventListener("pointerleave", handlePointerLeave, { passive: true });
-    document.addEventListener("visibilitychange", handleVisibilityChange);
-
-    // Initial resize and render
     resize();
-    renderFrame(performance.now());
+    renderGrid();
 
     return () => {
-      cancelAnimationFrame(animationFrameId);
       resizeObserver.disconnect();
-      intersectionObserver.disconnect();
-      window.removeEventListener("pointermove", handlePointerMove);
-      window.removeEventListener("pointerleave", handlePointerLeave);
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
-  }, [isClient, interactive, motion, paused, hotspotY, beamIntensity, variant]);
+  }, [isClient, hotspotY, beamIntensity, variant]);
 
   // Variant-based container CSS classes
   const variantClasses = {
@@ -359,12 +269,20 @@ export function HeroBlueLaserBackground({
         ref={containerRef}
         aria-hidden="true"
         data-testid="hero-blue-laser-background"
-        className={cn("hero-laser-background", variantClasses, className)}
+        className={cn("hero-laser-background relative", variantClasses, className)}
       >
+        {/* Layer 1: Dark grid with '+' markers (#08090c) */}
         <canvas
-          ref={canvasRef}
-          id={`aura-grid-canvas-${componentId}`}
-          className="block w-full h-full pointer-events-none"
+          ref={gridCanvasRef}
+          id={`grid-canvas-${componentId}`}
+          className="absolute inset-0 block w-full h-full pointer-events-none"
+        />
+
+        {/* Layer 2: Liquid cursor reveal canvas (smoke.jpg revealed through gooey metaballs) */}
+        <canvas
+          ref={liquidCanvasRef}
+          id="liquid-bg"
+          className="absolute inset-0 block w-full h-full pointer-events-none"
         />
       </div>
 
@@ -382,5 +300,6 @@ export function HeroBlueLaserBackground({
   );
 }
 
-// Alias for semantic clarity
+// Aliases for semantic clarity
+export { HeroBlueLaserBackground as LiquidCursorBackground };
 export { HeroBlueLaserBackground as AuraGridBackground };
