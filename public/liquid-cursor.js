@@ -1,328 +1,196 @@
-/**
- * ============================================================================
- * LIQUID CURSOR REVEAL EFFECT (Vanilla JS)
- * ============================================================================
- * Renders a gooey liquid metaball blob that tracks cursor movement.
- * Masks and reveals a colorful background image (/assets/smoke.jpg) inside
- * the blob while preserving the dark grid background outside the blob.
+/*
+ * liquid-cursor.js
+ * Imleci takip eden sıvı/damla efekti (WebGL). Sadece hareket ederken görünür, durunca kaybolur.
+ *
+ * KULLANIM: sayfanın </body> öncesine ekle:
+ *   <script src="/liquid-cursor.js" defer></script>   (görsel varsayılan: /assets/smoke.jpg)
+ *
+ * Seçenekler (script etiketine data- olarak):
+ *   data-image="/assets/smoke.jpg"   lekenin içinde görünecek görsel
+ *   data-z="-1"                      -1: içeriğin arkasında (varsayılan), 0 ve üstü: öne al
  */
+(function(){
+  var SCRIPT = document.currentScript;
+  var IMAGE_URL = (SCRIPT && SCRIPT.getAttribute('data-image')) || '/assets/smoke.jpg';
+  var Z_INDEX = (SCRIPT && SCRIPT.getAttribute('data-z')) || '-1';
+  if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  function boot(){
 
-// ============================================================================
-// TWEAKABLE CONSTANTS
-// ============================================================================
-const BLUR = 16;                  // Blur radius for metaball merging (px)
-const TRAIL_LIFETIME = 700;       // Lifespan of trail circles (ms)
-const BLOB_RADIUS = 55;           // Base radius of the main cursor blob (px)
-const DROPLET_CHANCE = 0.12;      // Probability of spawning satellite droplets per step
-const EASING = 0.15;              // Pointer lerp easing factor (fluid laggy feel)
-const IMAGE_URL = "/assets/smoke.jpg"; // Path to colorful reveal image
 
-(function () {
-  const canvas = document.getElementById("liquid-bg");
-  if (!canvas) return;
 
-  const ctx = canvas.getContext("2d", { alpha: true });
-  if (!ctx) return;
+var CFG = {
+  LIFE: 560,        // ms, iz ne kadar sürede kaybolur
+  MIN_R: 9,         // yavaş harekette damla yarıçapı (px)
+  MAX_R: 50,        // hızlı harekette en kalın yarıçap (px)
+  SPACING: 0.6,     // noktalar arası mesafe (yarıçap çarpanı)
+  FOLLOW: 22,       // imleç takip hızı (büyük = daha sıkı)
+  DROP_CHANCE: 0.3, // kopan damlacık olasılığı
+  MAX_POINTS: 66, MAX_DROPS: 14
+};
 
-  // Offscreen canvases for metaball circle drawing and blurred thresholding
-  const maskCanvas = document.createElement("canvas");
-  const maskCtx = maskCanvas.getContext("2d", { alpha: true });
+(function(){
+  var canvas = document.createElement('canvas');
+  canvas.id = 'liquid-cursor-canvas';
+  canvas.setAttribute('aria-hidden', 'true');
+  canvas.style.cssText = 'position:fixed;left:0;top:0;width:100vw;height:100vh;pointer-events:none;z-index:' + Z_INDEX;
+  document.body.appendChild(canvas);
+  var gl = canvas.getContext('webgl', {alpha:true, premultipliedAlpha:true, antialias:false});
+  if(!gl) return;
 
-  const blurredMaskCanvas = document.createElement("canvas");
-  const blurredMaskCtx = blurredMaskCanvas.getContext("2d", {
-    alpha: true,
-    willReadFrequently: true,
-  });
+  var VS = 'attribute vec2 a;void main(){gl_Position=vec4(a,0.,1.);}';
+  var FS = [
+  '#ifdef GL_FRAGMENT_PRECISION_HIGH','precision highp float;','#else','precision mediump float;','#endif',
+  'uniform vec2 uRes;uniform vec2 uImg;uniform float uT;uniform int uN;uniform vec3 uP[80];uniform sampler2D uTex;',
+  'void main(){',
+  ' vec2 fc=gl_FragCoord.xy;float f=0.0;',
+  ' for(int i=0;i<80;i++){',
+  '  if(i>=uN)break;',
+  '  vec3 p=uP[i];vec2 d=fc-p.xy;float R=p.z*1.8;',
+  '  float q=dot(d,d)/(R*R);',
+  '  if(q<1.0){float k=1.0-q;f+=k*k*k;}',
+  ' }',
+  ' float T=0.25;',
+  ' float m=smoothstep(T-0.035,T+0.035,f);',
+  ' float g=smoothstep(0.0,T,f);float glowA=g*g*0.22;',
+  ' float scale=max(uRes.x/uImg.x,uRes.y/uImg.y)*1.14;',
+  ' vec2 drift=vec2(sin(uT*0.15),cos(uT*0.12))*0.02;',
+  ' vec2 uv=(fc-uRes*0.5)/(uImg*scale)+0.5+drift;',
+  ' vec3 col=texture2D(uTex,uv).rgb;',
+  ' col*=0.92+0.22*smoothstep(T,T+0.6,f);',
+  ' float x=(f-T)/0.06;float rim=exp(-x*x);',
+  ' col+=vec3(0.5,0.6,1.0)*rim*0.16*m;',
+  ' vec3 glowCol=vec3(0.35,0.5,1.0);',
+  ' float a=m+glowA*(1.0-m);',
+  ' vec3 rgb=col*m+glowCol*glowA*(1.0-m);',
+  ' gl_FragColor=vec4(rgb,a);',
+  '}'].join('\n');
 
-  if (!maskCtx || !blurredMaskCtx) return;
-
-  // Preload reveal image
-  const smokeImage = new Image();
-  let imageLoaded = false;
-  smokeImage.src = IMAGE_URL;
-  smokeImage.onload = () => { imageLoaded = true; };
-
-  let width = 0;
-  let height = 0;
-  let dpr = 1;
-
-  function resize() {
-    const parent = canvas.parentElement || canvas;
-    const rect = parent.getBoundingClientRect();
-    width = Math.max(Math.round(rect.width), 320);
-    height = Math.max(Math.round(rect.height), 240);
-    dpr = Math.min(window.devicePixelRatio || 1, 1.5);
-
-    canvas.width = Math.round(width * dpr);
-    canvas.height = Math.round(height * dpr);
-    canvas.style.width = width + "px";
-    canvas.style.height = height + "px";
-    ctx.setTransform(1, 0, 0, 1, 0, 0);
-    ctx.scale(dpr, dpr);
-
-    maskCanvas.width = canvas.width;
-    maskCanvas.height = canvas.height;
-    maskCtx.setTransform(1, 0, 0, 1, 0, 0);
-    maskCtx.scale(dpr, dpr);
-
-    blurredMaskCanvas.width = canvas.width;
-    blurredMaskCanvas.height = canvas.height;
-    blurredMaskCtx.setTransform(1, 0, 0, 1, 0, 0);
-    blurredMaskCtx.scale(dpr, dpr);
+  function sh(type, src){
+    var s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s);
+    if(!gl.getShaderParameter(s, gl.COMPILE_STATUS)){ console.error(gl.getShaderInfoLog(s)); return null; }
+    return s;
   }
+  var vs = sh(gl.VERTEX_SHADER, VS), fs = sh(gl.FRAGMENT_SHADER, FS);
+  if(!vs || !fs) return;
+  var prog = gl.createProgram();
+  gl.attachShader(prog, vs); gl.attachShader(prog, fs); gl.linkProgram(prog);
+  if(!gl.getProgramParameter(prog, gl.LINK_STATUS)){ console.error(gl.getProgramInfoLog(prog)); return; }
+  gl.useProgram(prog);
 
-  // Pointer tracking
-  let pointerTargetX = -1000;
-  let pointerTargetY = -1000;
-  let pointerCurrentX = -1000;
-  let pointerCurrentY = -1000;
-  let prevX = -1000;
-  let prevY = -1000;
-  let isPointerInside = false;
-  let lastMoveTime = 0;
-  let autoTime = 0;
+  var buf = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, 1,1]), gl.STATIC_DRAW);
+  var loc = gl.getAttribLocation(prog, 'a');
+  gl.enableVertexAttribArray(loc);
+  gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
 
-  const trail = [];
-  const droplets = [];
+  var uRes = gl.getUniformLocation(prog,'uRes'), uImg = gl.getUniformLocation(prog,'uImg'),
+      uT = gl.getUniformLocation(prog,'uT'), uN = gl.getUniformLocation(prog,'uN'),
+      uP = gl.getUniformLocation(prog,'uP'), uTex = gl.getUniformLocation(prog,'uTex');
 
-  function onPointerMove(e) {
-    const rect = canvas.getBoundingClientRect();
-    pointerTargetX = e.clientX - rect.left;
-    pointerTargetY = e.clientY - rect.top;
-    isPointerInside = true;
-    lastMoveTime = performance.now();
+  var dpr = 1, W = 0, H = 0;
+  function resize(){
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    W = Math.round(innerWidth * dpr); H = Math.round(innerHeight * dpr);
+    canvas.width = W; canvas.height = H;
+    gl.viewport(0, 0, W, H);
+    gl.uniform2f(uRes, W, H);
   }
+  resize(); addEventListener('resize', resize);
 
-  function onPointerLeave() {
-    isPointerInside = false;
-  }
+  var pts = [], drops = [];
+  var tx = 0, ty = 0, cx = 0, cy = 0, active = false;
+  var spS = 0, rS = CFG.MIN_R, drawn = false, last = performance.now();
+  var arr = new Float32Array(80 * 3);
 
-  window.addEventListener("pointermove", onPointerMove, { passive: true });
-  window.addEventListener("pointerdown", onPointerMove, { passive: true });
-  document.addEventListener("mouseleave", onPointerLeave);
+  addEventListener('pointermove', function(e){
+    tx = e.clientX; ty = e.clientY;
+    if(!active){ cx = tx; cy = ty; active = true; }
+  }, {passive:true});
+  document.documentElement.addEventListener('mouseleave', function(){ active = false; });
+  addEventListener('blur', function(){ active = false; });
 
-  function drawCoverImage(targetCtx, img, canvasW, canvasH, offsetX, offsetY, zoom) {
-    const imgRatio = img.naturalWidth / img.naturalHeight;
-    const canvasRatio = canvasW / canvasH;
-    let drawW = canvasW * zoom;
-    let drawH = canvasH * zoom;
+  function clamp(v, a, b){ return v < a ? a : (v > b ? b : v); }
 
-    if (canvasRatio > imgRatio) {
-      drawW = canvasW * zoom;
-      drawH = (canvasW / imgRatio) * zoom;
-    } else {
-      drawH = canvasH * zoom;
-      drawW = (canvasH * imgRatio) * zoom;
-    }
+  function frame(now){
+    requestAnimationFrame(frame);
+    var dt = Math.min(0.05, (now - last) / 1000); last = now;
+    if(dt <= 0) return;
 
-    const dx = (canvasW - drawW) * 0.5 + offsetX;
-    const dy = (canvasH - drawH) * 0.5 + offsetY;
-    targetCtx.drawImage(img, dx, dy, drawW, drawH);
-  }
-
-  const startTime = performance.now();
-
-  function tick(now) {
-    const elapsed = (now - startTime) * 0.001;
-
-    // 1. Pointer easing with lerp
-    const isIdle = now - lastMoveTime > 2500 && !isPointerInside;
-    if (isIdle) {
-      autoTime += 0.016;
-      pointerTargetX = width * 0.5 + Math.sin(autoTime * 0.9) * (width * 0.28);
-      pointerTargetY = height * 0.45 + Math.cos(autoTime * 1.3) * (height * 0.18);
-    }
-
-    if (pointerTargetX > -500) {
-      if (pointerCurrentX < -500) {
-        pointerCurrentX = pointerTargetX;
-        pointerCurrentY = pointerTargetY;
-        prevX = pointerCurrentX;
-        prevY = pointerCurrentY;
-      } else {
-        pointerCurrentX += (pointerTargetX - pointerCurrentX) * EASING;
-        pointerCurrentY += (pointerTargetY - pointerCurrentY) * EASING;
-      }
-    }
-
-    // 2. Interpolate path & spawn circles
-    if (pointerCurrentX > -500 && (isPointerInside || isIdle)) {
-      const dist = Math.hypot(pointerCurrentX - prevX, pointerCurrentY - prevY);
-      const stepDist = Math.max(BLOB_RADIUS * 0.32, 12);
-      const steps = Math.max(1, Math.min(Math.ceil(dist / stepDist), 20));
-
-      for (let s = 1; s <= steps; s++) {
-        const t = s / steps;
-        const interpX = prevX + (pointerCurrentX - prevX) * t;
-        const interpY = prevY + (pointerCurrentY - prevY) * t;
-
-        trail.push({
-          x: interpX,
-          y: interpY,
-          radius: BLOB_RADIUS * (0.85 + Math.random() * 0.3),
-          birth: now,
-          lifetime: TRAIL_LIFETIME,
-        });
-
-        if (Math.random() < DROPLET_CHANCE) {
-          const angle = Math.random() * Math.PI * 2;
-          const speed = Math.random() * 2.8 + 1.2;
-          droplets.push({
-            x: interpX,
-            y: interpY,
-            vx: Math.cos(angle) * speed,
-            vy: Math.sin(angle) * speed,
-            radius: BLOB_RADIUS * (Math.random() * 0.22 + 0.18),
-            birth: now,
-            lifetime: TRAIL_LIFETIME * 0.85,
-          });
+    if(active){
+      var k = 1 - Math.exp(-dt * CFG.FOLLOW);
+      var nx = cx + (tx - cx) * k, ny = cy + (ty - cy) * k;
+      var dx = nx - cx, dy = ny - cy, dist = Math.sqrt(dx*dx + dy*dy);
+      if(dist > 0.6){
+        spS += (dist / dt - spS) * 0.18;
+        var rT = clamp(CFG.MIN_R + spS * 0.02, CFG.MIN_R, CFG.MAX_R);
+        rS += (rT - rS) * 0.25;
+        var spacing = Math.max(5, rS * CFG.SPACING), n = Math.ceil(dist / spacing);
+        for(var i = 1; i <= n; i++){
+          var f = i / n;
+          pts.push({x: cx + dx * f, y: cy + dy * f, r: rS, t: now, life: CFG.LIFE});
         }
-      }
-
-      prevX = pointerCurrentX;
-      prevY = pointerCurrentY;
-    }
-
-    // 3. Draw circles onto offscreen mask canvas
-    maskCtx.clearRect(0, 0, width, height);
-
-    let minX = width;
-    let minY = height;
-    let maxX = 0;
-    let maxY = 0;
-    let count = 0;
-
-    for (let i = trail.length - 1; i >= 0; i--) {
-      const c = trail[i];
-      const age = now - c.birth;
-      if (age >= c.lifetime) {
-        trail.splice(i, 1);
-        continue;
-      }
-      const r = c.radius * (1 - age / c.lifetime);
-      if (r <= 0.5) continue;
-
-      maskCtx.beginPath();
-      maskCtx.arc(c.x, c.y, r, 0, Math.PI * 2);
-      maskCtx.fillStyle = "#ffffff";
-      maskCtx.fill();
-
-      minX = Math.min(minX, c.x - r);
-      minY = Math.min(minY, c.y - r);
-      maxX = Math.max(maxX, c.x + r);
-      maxY = Math.max(maxY, c.y + r);
-      count++;
-    }
-
-    for (let i = droplets.length - 1; i >= 0; i--) {
-      const d = droplets[i];
-      const age = now - d.birth;
-      if (age >= d.lifetime) {
-        droplets.splice(i, 1);
-        continue;
-      }
-      d.x += d.vx;
-      d.y += d.vy;
-      d.vx *= 0.96;
-      d.vy *= 0.96;
-
-      const r = d.radius * (1 - age / d.lifetime);
-      if (r <= 0.5) continue;
-
-      maskCtx.beginPath();
-      maskCtx.arc(d.x, d.y, r, 0, Math.PI * 2);
-      maskCtx.fillStyle = "#ffffff";
-      maskCtx.fill();
-
-      minX = Math.min(minX, d.x - r);
-      minY = Math.min(minY, d.y - r);
-      maxX = Math.max(maxX, d.x + r);
-      maxY = Math.max(maxY, d.y + r);
-      count++;
-    }
-
-    // 4. Metaball Blur + Threshold
-    ctx.clearRect(0, 0, width, height);
-
-    if (count > 0) {
-      const pad = BLUR * 3;
-      const bx = Math.max(0, Math.floor(minX - pad));
-      const by = Math.max(0, Math.floor(minY - pad));
-      const bw = Math.min(width - bx, Math.ceil(maxX - minX + pad * 2));
-      const bh = Math.min(height - by, Math.ceil(maxY - minY + pad * 2));
-
-      if (bw > 0 && bh > 0) {
-        blurredMaskCtx.clearRect(0, 0, width, height);
-        blurredMaskCtx.save();
-        blurredMaskCtx.filter = "blur(" + BLUR + "px)";
-        blurredMaskCtx.drawImage(maskCanvas, 0, 0);
-        blurredMaskCtx.restore();
-
-        try {
-          const dprBx = Math.floor(bx * dpr);
-          const dprBy = Math.floor(by * dpr);
-          const dprBw = Math.min(blurredMaskCanvas.width - dprBx, Math.ceil(bw * dpr));
-          const dprBh = Math.min(blurredMaskCanvas.height - dprBy, Math.ceil(bh * dpr));
-
-          if (dprBw > 0 && dprBh > 0) {
-            const imgData = blurredMaskCtx.getImageData(dprBx, dprBy, dprBw, dprBh);
-            const data32 = new Uint32Array(imgData.data.buffer);
-
-            for (let idx = 0; idx < data32.length; idx++) {
-              const alpha = (data32[idx] >> 24) & 0xff;
-              if (alpha > 135) {
-                data32[idx] = 0xffffffff;
-              } else if (alpha > 95) {
-                const smoothAlpha = Math.round(((alpha - 95) / 40) * 255);
-                data32[idx] = (smoothAlpha << 24) | 0x00ffffff;
-              } else {
-                data32[idx] = 0;
-              }
-            }
-            blurredMaskCtx.putImageData(imgData, dprBx, dprBy);
-          }
-        } catch (err) {
-          // Fallback if image data read fails
+        if(pts.length > CFG.MAX_POINTS) pts.splice(0, pts.length - CFG.MAX_POINTS);
+        if(spS > 350 && Math.random() < CFG.DROP_CHANCE && drops.length < CFG.MAX_DROPS){
+          var ux = dx / dist, uy = dy / dist, side = Math.random() < .5 ? -1 : 1, v = 90 + Math.random() * 200;
+          drops.push({x: nx, y: ny, vx: -uy * side * v + ux * spS * 0.12, vy: ux * side * v + uy * spS * 0.12,
+                      r: 3 + Math.random() * 6, t: now, life: 450 + Math.random() * 350});
         }
+      } else { spS *= 0.9; }
+      cx = nx; cy = ny;
+    } else { spS *= 0.9; }
 
-        // Soft outer glow with subtle cyan/pink tint
-        ctx.save();
-        ctx.filter = "blur(18px)";
-        ctx.globalAlpha = 0.38;
-        ctx.drawImage(blurredMaskCanvas, 0, 0);
-        ctx.restore();
+    pts = pts.filter(function(p){ return now - p.t < p.life; });
+    drops = drops.filter(function(d){ return now - d.t < d.life; });
 
-        // Composite colorful smoke image through the gooey blob mask
-        ctx.save();
-        ctx.drawImage(blurredMaskCanvas, 0, 0);
-        ctx.globalCompositeOperation = "source-in";
-
-        if (imageLoaded) {
-          const parallaxX = Math.sin(elapsed * 0.28) * 28 + (pointerCurrentX - width * 0.5) * 0.05;
-          const parallaxY = Math.cos(elapsed * 0.22) * 22 + (pointerCurrentY - height * 0.5) * 0.05;
-          const zoom = 1.06 + Math.sin(elapsed * 0.18) * 0.03;
-          drawCoverImage(ctx, smokeImage, width, height, parallaxX, parallaxY, zoom);
-        } else {
-          ctx.fillStyle = "#ff0077";
-          ctx.fillRect(0, 0, width, height);
-        }
-        ctx.restore();
-
-        // Thin specular liquid rim
-        ctx.save();
-        ctx.globalCompositeOperation = "screen";
-        ctx.globalAlpha = 0.25;
-        ctx.filter = "blur(2.5px)";
-        ctx.drawImage(blurredMaskCanvas, 0, 0);
-        ctx.restore();
-      }
+    var c = 0, p, s, r, age;
+    for(var j = 0; j < drops.length; j++){
+      p = drops[j]; p.x += p.vx * dt; p.y += p.vy * dt;
+      var damp = Math.exp(-dt * 3); p.vx *= damp; p.vy *= damp;
+      age = (now - p.t) / p.life; s = Math.pow(1 - age, 1.3); r = p.r * s * dpr;
+      if(r < 0.8) continue;
+      arr[c*3] = p.x * dpr; arr[c*3+1] = H - p.y * dpr; arr[c*3+2] = r; c++;
+    }
+    for(var q = 0; q < pts.length && c < 80; q++){
+      p = pts[q]; age = (now - p.t) / p.life; s = Math.pow(1 - age, 1.3); r = p.r * s * dpr;
+      if(r < 0.8) continue;
+      arr[c*3] = p.x * dpr; arr[c*3+1] = H - p.y * dpr; arr[c*3+2] = r; c++;
     }
 
-    requestAnimationFrame(tick);
+    if(c === 0){
+      if(drawn){ gl.clearColor(0,0,0,0); gl.clear(gl.COLOR_BUFFER_BIT); drawn = false; }
+      return;
+    }
+    gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.uniform1i(uN, c);
+    gl.uniform3fv(uP, arr);
+    gl.uniform1f(uT, now / 1000);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    drawn = true;
   }
 
-  window.addEventListener("resize", resize);
-  resize();
-  requestAnimationFrame(tick);
+  var img = new Image();
+  img.onload = function(){
+    var tex = gl.createTexture();
+    gl.activeTexture(gl.TEXTURE0);
+    gl.bindTexture(gl.TEXTURE_2D, tex);
+    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    gl.uniform1i(uTex, 0);
+    gl.uniform2f(uImg, img.naturalWidth, img.naturalHeight);
+    last = performance.now();
+    requestAnimationFrame(frame);
+  };
+  img.src = IMAGE_URL;
 })();
 
+
+  }
+  // React/SSR hydration bittikten sonra başlat
+  if (document.readyState === 'complete') setTimeout(boot, 150);
+  else addEventListener('load', function(){ setTimeout(boot, 150); });
+})();
