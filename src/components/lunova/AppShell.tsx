@@ -14,6 +14,7 @@ import { toast } from "sonner";
 import { Brand } from "./Brand";
 import { MoonBackground } from "./MoonBackground";
 import { useAuth } from "./AuthProvider";
+import { ThemeToggle } from "./ThemeToggle";
 import { authErrorMessage } from "@/lib/firebase-auth";
 const nav = [
   { to: "/dashboard", label: "Overview", icon: Home },
@@ -139,7 +140,8 @@ export function AppShell({
           <span className="draft-mobile-brand">
             <Brand />
           </span>
-          <span>
+          <span className="flex items-center gap-3">
+            <ThemeToggle size="sm" />
             <span className="hidden sm:inline">Saved on this device</span>
             <button
               type="button"

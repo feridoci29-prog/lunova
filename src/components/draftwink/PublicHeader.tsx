@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { ArrowUpRight } from "lucide-react";
 import { Brand } from "@/components/lunova/Brand";
 import { useAuth } from "@/components/lunova/AuthProvider";
+import { ThemeToggle } from "@/components/lunova/ThemeToggle";
 
 export function PublicHeader() {
   const { session } = useAuth();
@@ -14,6 +15,7 @@ export function PublicHeader() {
         <Link to="/pricing">Pricing</Link>
       </nav>
       <div className="dw-header-actions">
+        <ThemeToggle />
         <Link to={session?.mode === "firebase" ? "/dashboard" : "/login"}>
           {session?.mode === "firebase" ? "Workspace" : "Log in"}
         </Link>

@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { ArrowLeft, ArrowUpRight, Check, Sparkles } from "lucide-react";
 import type { ReactNode } from "react";
 import { Brand } from "./Brand";
+import { ThemeToggle } from "./ThemeToggle";
 import { HeroBlueLaserBackground } from "@/components/draftwink/HeroBlueLaserBackground";
 import "./auth-layout.css";
 
@@ -21,9 +22,12 @@ export function AuthLayout({
       <HeroBlueLaserBackground variant="full" />
       <header className="dw-auth-header">
         <Brand />
-        <Link to="/preview" className="dw-auth-back">
-          <ArrowLeft size={15} /> Back to preview
-        </Link>
+        <div className="flex items-center gap-3">
+          <ThemeToggle size="sm" />
+          <Link to="/preview" className="dw-auth-back">
+            <ArrowLeft size={15} /> Back to preview
+          </Link>
+        </div>
       </header>
       <main className="dw-auth-grid">
         <section className="dw-auth-story" aria-label="Your Draftwink workspace">

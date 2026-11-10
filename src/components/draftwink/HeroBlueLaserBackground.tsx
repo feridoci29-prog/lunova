@@ -117,10 +117,12 @@ export function HeroBlueLaserBackground({
     const renderGrid = () => {
       if (!ctx || width === 0 || height === 0) return;
 
+      const isDark = document.documentElement.classList.contains("dark");
+
       ctx.clearRect(0, 0, width, height);
 
-      // BASE BACKGROUND: Dark theme #08090c
-      ctx.fillStyle = "#08090c";
+      // BASE BACKGROUND
+      ctx.fillStyle = isDark ? "#08090c" : "#f3f3f1";
       ctx.fillRect(0, 0, width, height);
 
       // Center subtle ambient spotlight behind the hero
@@ -135,10 +137,17 @@ export function HeroBlueLaserBackground({
         spotY,
         Math.min(width, 1100) * 0.65,
       );
-      ambientSpot.addColorStop(0, `rgba(255, 255, 255, ${0.04 * beamIntensity})`);
-      ambientSpot.addColorStop(0.4, `rgba(255, 255, 255, ${0.015 * beamIntensity})`);
-      ambientSpot.addColorStop(0.8, "rgba(255, 255, 255, 0.002)");
-      ambientSpot.addColorStop(1, "rgba(0, 0, 0, 0)");
+      if (isDark) {
+        ambientSpot.addColorStop(0, `rgba(255, 255, 255, ${0.04 * beamIntensity})`);
+        ambientSpot.addColorStop(0.4, `rgba(255, 255, 255, ${0.015 * beamIntensity})`);
+        ambientSpot.addColorStop(0.8, "rgba(255, 255, 255, 0.002)");
+        ambientSpot.addColorStop(1, "rgba(0, 0, 0, 0)");
+      } else {
+        ambientSpot.addColorStop(0, `rgba(0, 0, 0, ${0.02 * beamIntensity})`);
+        ambientSpot.addColorStop(0.4, `rgba(0, 0, 0, ${0.008 * beamIntensity})`);
+        ambientSpot.addColorStop(0.8, "rgba(0, 0, 0, 0.001)");
+        ambientSpot.addColorStop(1, "rgba(0, 0, 0, 0)");
+      }
       ctx.fillStyle = ambientSpot;
       ctx.fillRect(0, 0, width, height);
 
@@ -146,9 +155,13 @@ export function HeroBlueLaserBackground({
       const cellSize = width < 768 ? 64 : 80;
       const offsetX = (width % cellSize) * 0.5;
 
+      const gridStroke = isDark
+        ? `rgba(255, 255, 255, ${0.038 * beamIntensity})`
+        : `rgba(0, 0, 0, ${0.05 * beamIntensity})`;
+
       ctx.save();
       ctx.lineWidth = 1;
-      ctx.strokeStyle = `rgba(255, 255, 255, ${0.038 * beamIntensity})`;
+      ctx.strokeStyle = gridStroke;
 
       ctx.beginPath();
       for (let x = offsetX; x <= width; x += cellSize) {
@@ -184,9 +197,13 @@ export function HeroBlueLaserBackground({
         840, // Section transition
       ];
 
+      const structuralStroke = isDark
+        ? `rgba(255, 255, 255, ${0.075 * beamIntensity})`
+        : `rgba(0, 0, 0, ${0.08 * beamIntensity})`;
+
       ctx.save();
       ctx.lineWidth = 1;
-      ctx.strokeStyle = `rgba(255, 255, 255, ${0.075 * beamIntensity})`;
+      ctx.strokeStyle = structuralStroke;
 
       ctx.beginPath();
       for (const colX of structuralCols) {
@@ -206,7 +223,11 @@ export function HeroBlueLaserBackground({
       ctx.stroke();
 
       // "+" CROSSHAIR MARKERS AT KEY INTERSECTIONS
-      ctx.strokeStyle = `rgba(255, 255, 255, ${0.28 * beamIntensity})`;
+      const crosshairStroke = isDark
+        ? `rgba(255, 255, 255, ${0.28 * beamIntensity})`
+        : `rgba(0, 0, 0, ${0.2 * beamIntensity})`;
+
+      ctx.strokeStyle = crosshairStroke;
       ctx.lineWidth = 1;
       ctx.beginPath();
 
@@ -232,9 +253,15 @@ export function HeroBlueLaserBackground({
       if (variant === "hero" || variant === "top") {
         const fadeY = height * 0.76;
         const fadeGrad = ctx.createLinearGradient(0, fadeY, 0, height);
-        fadeGrad.addColorStop(0, "rgba(8, 9, 12, 0)");
-        fadeGrad.addColorStop(0.65, "rgba(8, 9, 12, 0.75)");
-        fadeGrad.addColorStop(1, "rgba(8, 9, 12, 1)");
+        if (isDark) {
+          fadeGrad.addColorStop(0, "rgba(8, 9, 12, 0)");
+          fadeGrad.addColorStop(0.65, "rgba(8, 9, 12, 0.75)");
+          fadeGrad.addColorStop(1, "rgba(8, 9, 12, 1)");
+        } else {
+          fadeGrad.addColorStop(0, "rgba(243, 243, 241, 0)");
+          fadeGrad.addColorStop(0.65, "rgba(243, 243, 241, 0.75)");
+          fadeGrad.addColorStop(1, "rgba(243, 243, 241, 1)");
+        }
 
         ctx.fillStyle = fadeGrad;
         ctx.fillRect(0, fadeY, width, height - fadeY);
@@ -247,11 +274,20 @@ export function HeroBlueLaserBackground({
     });
     resizeObserver.observe(container);
 
+    const mutationObserver = new MutationObserver(() => {
+      renderGrid();
+    });
+    mutationObserver.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
+
     resize();
     renderGrid();
 
     return () => {
       resizeObserver.disconnect();
+      mutationObserver.disconnect();
     };
   }, [isClient, hotspotY, beamIntensity, variant]);
 

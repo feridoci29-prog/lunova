@@ -114,7 +114,7 @@ function Landing() {
           <p className="dw-eyebrow">
             <span /> A NEW WAY TO START
           </p>
-          <h1>
+          <h1 data-liquid-invert>
             From thought
             <br />
             <span>to first draft.</span>

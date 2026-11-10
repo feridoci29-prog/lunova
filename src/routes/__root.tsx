@@ -17,6 +17,7 @@ import draftCss from "../draftwink.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { AuthProvider } from "@/components/lunova/AuthProvider";
 import { AuthGate } from "@/components/lunova/AuthGate";
+import { ThemeProvider, useTheme } from "@/components/lunova/ThemeProvider";
 
 function NotFoundComponent() {
   return (
@@ -111,9 +112,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 });
 
 function RootShell({ children }: { children: ReactNode }) {
+  const themeInitScript = `(function(){try{var t=localStorage.getItem("theme");if(!t){t=window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";}if(t==="dark"){document.documentElement.classList.add("dark");document.documentElement.style.colorScheme="dark";}else{document.documentElement.classList.remove("dark");document.documentElement.style.colorScheme="light";}}catch(e){}})();`;
+
   return (
-    <html lang="en" className="dark">
+    <html lang="en" suppressHydrationWarning>
       <head>
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
         <HeadContent />
       </head>
       <body>
@@ -128,11 +132,24 @@ function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <AuthOutlet />
-      </AuthProvider>
-      <Toaster theme="dark" position="top-center" toastOptions={{ className: "glass-strong" }} />
+      <ThemeProvider>
+        <AuthProvider>
+          <AuthOutlet />
+        </AuthProvider>
+        <ThemedToaster />
+      </ThemeProvider>
     </QueryClientProvider>
+  );
+}
+
+function ThemedToaster() {
+  const { theme } = useTheme();
+  return (
+    <Toaster
+      theme={theme}
+      position="top-center"
+      toastOptions={{ className: "glass-strong" }}
+    />
   );
 }
 
