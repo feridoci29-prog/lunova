@@ -1,29 +1,28 @@
-import { Link } from "@tanstack/react-router";
-import { cn } from "@/lib/utils";
+import { BrandLogo, type LogoSize } from "@/components/brand/BrandLogo";
 
-/** Draftwink folded-page mark; legacy module path preserves existing imports. */
-export function Brand({ className, compact = false }: { className?: string; compact?: boolean }) {
+export interface BrandProps {
+  className?: string;
+  compact?: boolean;
+  size?: LogoSize;
+  interactive?: boolean;
+}
+
+/**
+ * Global Brand component replaced with transparent balloon-letter logo (LENOVA).
+ * Supports size ("sm" | "md" | "lg"), interactive mixed-variant shuffle, and dark/light shadow.
+ */
+export function Brand({ className, compact = false, size, interactive = true }: BrandProps) {
+  const chosenSize: LogoSize = size ?? (compact ? "sm" : "md");
   return (
-    <Link
-      to="/"
-      aria-label="Draftwink home"
-      className={cn(
-        "inline-flex shrink-0 items-center gap-2.5 font-display text-foreground",
-        className,
-      )}
-    >
-      {compact ? (
-        <DraftMark className="h-8 w-8" />
-      ) : (
-        <>
-          <DraftMark className="h-8 w-8" />
-          <span className="text-[1.25rem] font-bold tracking-[-.045em]">Draftwink</span>
-        </>
-      )}
-    </Link>
+    <BrandLogo
+      size={chosenSize}
+      interactive={interactive}
+      className={className}
+    />
   );
 }
 
+// Keep legacy SVG marks exported for backward compatibility if imported by tests
 export function DraftMark({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 32 36" className={className} fill="none" aria-hidden="true">

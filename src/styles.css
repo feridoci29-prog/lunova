@@ -103,6 +103,7 @@
   --gradient-fade: linear-gradient(180deg, rgba(243, 243, 241, 0.1), rgba(243, 243, 241, 0.95));
   --grid-line: rgba(0, 0, 0, 0.06);
   --grid-cross: rgba(0, 0, 0, 0.16);
+  --logo-drop-shadow: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.25));
 }
 
 .dark {
@@ -150,6 +151,7 @@
   --gradient-fade: linear-gradient(180deg, rgba(8, 9, 12, 0.2), rgba(8, 9, 12, 0.95));
   --grid-line: rgba(255, 255, 255, 0.045);
   --grid-cross: rgba(255, 255, 255, 0.28);
+  --logo-drop-shadow: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.6));
 }
 
 .theme-transition,
@@ -205,9 +207,20 @@
 }
 
 @keyframes float-slow { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-10px) } }
+@keyframes balloon-float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+}
 @keyframes fade-up { from { opacity: 0; transform: translateY(14px) } to { opacity: 1; transform: none } }
 @utility animate-float { animation: float-slow 9s ease-in-out infinite; }
+@utility animate-balloon-float { animation: balloon-float 6s ease-in-out infinite; }
 @utility animate-fade-up { animation: fade-up 0.8s cubic-bezier(.2,.7,.2,1) both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-balloon-float {
+    animation: none !important;
+  }
+}
 
 .entrance-backdrop-media {
   object-position: center;
