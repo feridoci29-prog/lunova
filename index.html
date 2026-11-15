@@ -38,10 +38,11 @@
         <button class="nav-link" onclick="Router.navigate('faq')">FAQ</button>
       </nav>
 
-      <div style="display:flex; align-items:center; gap:16px;">
-        <button class="btn btn-glass btn-sm" style="border-radius:999px; padding:6px 12px;" title="Language">
-          🌐
-        </button>
+      <div style="display:flex; align-items:center; gap:12px;">
+        <a href="https://github.com/feridoci29-prog/lunova" target="_blank" class="btn btn-glass btn-sm" style="display:inline-flex; align-items:center; gap:6px; text-decoration:none;" title="Star on GitHub">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+          <span>Star</span>
+        </a>
         <button class="btn btn-glass btn-sm" onclick="Router.navigate('login')">Sign In</button>
         <button class="btn btn-primary btn-sm" onclick="App.continueAsGuest()">Get Started</button>
       </div>
@@ -103,9 +104,30 @@
             </div>
           </div>
 
-          <!-- Real Floating Studio Graphic from Image 1 -->
-          <div class="landing-real-studio-box" onclick="Router.navigate('workspace')" title="Click to launch interactive AI Workspace">
-            <img src="assets/thumbs/landing-floating-studio.jpg" alt="LUNOVA AI Studio Workspace">
+          <!-- Interactive Live Studio Showcase Mockup -->
+          <div class="landing-interactive-mockup">
+            <div class="mockup-chrome-bar">
+              <div class="mockup-dots">
+                <span style="background:#ef4444;"></span>
+                <span style="background:#f59e0b;"></span>
+                <span style="background:#10b981;"></span>
+              </div>
+              <div class="mockup-tabs">
+                <button class="mockup-tab active" id="demo-tab-crypto" onclick="App.switchLandingDemo('crypto')">📈 Crypto Web3</button>
+                <button class="mockup-tab" id="demo-tab-aichat" onclick="App.switchLandingDemo('aichat')">⚡ AI Studio</button>
+                <button class="mockup-tab" id="demo-tab-game" onclick="App.switchLandingDemo('game')">🎮 Arcade</button>
+                <button class="mockup-tab" id="demo-tab-saas" onclick="App.switchLandingDemo('saas')">📊 SaaS</button>
+              </div>
+            </div>
+            <div class="mockup-iframe-wrap">
+              <iframe id="landingDemoIframe" sandbox="allow-scripts allow-modals allow-forms"></iframe>
+              <div class="mockup-overlay-bar">
+                <span class="mockup-badge">✦ Live Interactive Preview</span>
+                <button class="btn btn-primary btn-sm mockup-launch-btn" onclick="App.openLandingDemoInWorkspace()">
+                  Open & Edit in Studio →
+                </button>
+              </div>
+            </div>
           </div>
         </section>
 

@@ -32,6 +32,7 @@ const App = {
     this.setupEventListeners();
     Router.init();
     this.renderAllViews();
+    this.switchLandingDemo('crypto');
   },
 
   loadState() {
@@ -399,6 +400,60 @@ const App = {
     Router.navigate('workspace');
     this.renderWorkspace();
     this.showToast(`"${synth.title}" built and opened in Studio! ✦`, 'success');
+  },
+
+  activeLandingDemoCategory: 'crypto',
+
+  switchLandingDemo(category) {
+    this.activeLandingDemoCategory = category;
+    
+    // Toggle active tab buttons
+    ['crypto', 'aichat', 'game', 'saas'].forEach(cat => {
+      const btn = document.getElementById(`demo-tab-${cat}`);
+      if (btn) btn.classList.toggle('active', cat === category);
+    });
+
+    const iframe = document.getElementById('landingDemoIframe');
+    if (!iframe) return;
+
+    let synth;
+    if (category === 'crypto') {
+      synth = LunovaGenerator.buildCryptoTemplate('Nexus Crypto Web3', 'Real-time order book and live exchange chart', '#38bdf8');
+    } else if (category === 'aichat') {
+      synth = LunovaGenerator.buildAiChatTemplate('Cognitive AI Studio', 'Next-Gen LLM Chatbot Interface with streaming responses', '#10b981');
+    } else if (category === 'game') {
+      synth = LunovaGenerator.buildGameTemplate('Cyber Neon Arcade', 'Playable retro neon breakout game with physics', '#f43f5e');
+    } else {
+      synth = LunovaGenerator.buildSaasTemplate('PulseOps Metrics', 'SaaS enterprise telemetry and conversion dashboard', '#38bdf8');
+    }
+
+    const htmlFile = synth.find(f => f.name.endsWith('.html')) || synth[0];
+    const cssFile = synth.find(f => f.name.endsWith('.css'));
+    const jsFile = synth.find(f => f.name.endsWith('.js'));
+
+    let html = htmlFile ? htmlFile.content : '<h1>Preview</h1>';
+    if (cssFile) {
+      const styleTag = `<style>${cssFile.content}</style>`;
+      html = html.includes('</head>') ? html.replace('</head>', `${styleTag}</head>`) : styleTag + html;
+    }
+    if (jsFile) {
+      const scriptTag = `<script>${jsFile.content}</script>`;
+      html = html.includes('</body>') ? html.replace('</body>', `${scriptTag}</body>`) : html + scriptTag;
+    }
+
+    iframe.srcdoc = html;
+  },
+
+  openLandingDemoInWorkspace() {
+    const cat = this.activeLandingDemoCategory || 'crypto';
+    let prompt = 'A real-time crypto trading web3 portal with live candlestick chart';
+    if (cat === 'aichat') prompt = 'A next-generation AI assistant chat studio with streaming code blocks';
+    else if (cat === 'game') prompt = 'A retro cyberpunk arcade breakout game with canvas physics';
+    else if (cat === 'saas') prompt = 'A modern SaaS metrics and telemetry dashboard';
+
+    const input = document.getElementById('landingHeroPromptInput');
+    if (input) input.value = prompt;
+    this.launchFromHeroPrompt();
   },
 
   togglePasswordVisibility(id) {

@@ -504,26 +504,110 @@ html, body {
 .stat-lbl { font-size: 11.5px; color: #94a3b8; }
 
 /* Landing Real Floating Studio Graphic */
-.landing-real-studio-box {
+/* Interactive Live Studio Showcase Mockup */
+.landing-interactive-mockup {
   width: 100%;
-  max-width: 480px;
+  max-width: 560px;
+  background: #080d1e;
   border-radius: var(--radius-xl);
   overflow: hidden;
-  box-shadow: 0 25px 60px rgba(0,0,0,0.8), 0 0 50px rgba(59,130,246,0.3);
-  border: 1px solid rgba(125, 211, 252, 0.3);
-  transform: perspective(1000px) rotateY(-4deg) rotateX(2deg);
-  transition: transform 0.4s ease;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8), 0 0 50px rgba(56, 189, 248, 0.25);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+  transform: perspective(1200px) rotateY(-2deg) rotateX(1deg);
+}
+
+.landing-interactive-mockup:hover {
+  transform: perspective(1200px) rotateY(0deg) rotateX(0deg);
+  box-shadow: 0 35px 90px rgba(0, 0, 0, 0.9), 0 0 70px rgba(56, 189, 248, 0.4);
+}
+
+.mockup-chrome-bar {
+  background: #0b1126;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.mockup-dots {
+  display: flex;
+  gap: 6px;
+}
+
+.mockup-dots span {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.mockup-tabs {
+  display: flex;
+  gap: 4px;
+}
+
+.mockup-tab {
+  background: none;
+  border: none;
+  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 6px;
   cursor: pointer;
+  transition: all 0.2s;
 }
 
-.landing-real-studio-box:hover {
-  transform: perspective(1000px) rotateY(0deg) rotateX(0deg);
+.mockup-tab:hover {
+  color: #fff;
 }
 
-.landing-real-studio-box img {
+.mockup-tab.active {
+  background: rgba(56, 189, 248, 0.18);
+  color: #38bdf8;
+  border: 1px solid rgba(56, 189, 248, 0.3);
+}
+
+.mockup-iframe-wrap {
+  position: relative;
+  height: 380px;
+  background: #000;
+  overflow: hidden;
+}
+
+.mockup-iframe-wrap iframe {
   width: 100%;
-  height: auto;
-  display: block;
+  height: 100%;
+  border: none;
+}
+
+.mockup-overlay-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 8px 16px;
+  background: rgba(6, 10, 22, 0.85);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.mockup-badge {
+  font-size: 11px;
+  color: #10b981;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+.mockup-launch-btn {
+  font-size: 11.5px !important;
+  padding: 4px 12px !important;
 }
 
 /* Category Strip */
