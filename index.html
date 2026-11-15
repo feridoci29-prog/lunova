@@ -1,0 +1,1301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LUNOVA — Turn Your Ideas Into Reality</title>
+  <meta name="description" content="Create websites, apps, code, games, documents and more — just by chatting. LUNOVA builds it for you.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Background Cosmos Atmosphere -->
+  <div class="cosmos-container">
+    <img src="assets/cosmos.jpg" class="cosmos-bg-img" alt="" />
+    <canvas id="starCanvas"></canvas>
+    <div class="cosmos-overlay"></div>
+  </div>
+
+  <div id="app">
+    <!-- Public Header (Used for Landing and Login) -->
+    <header class="main-nav" id="publicNavbar">
+      <div class="brand-logo" onclick="Router.navigate('landing')" role="button" tabindex="0">
+        <div class="brand-icon-wrap">
+          <svg viewBox="0 0 32 32" fill="none">
+            <path d="M16 3C8.82 3 3 8.82 3 16C3 23.18 8.82 29 16 29C20.46 29 24.38 26.75 26.72 23.32C20.89 23.85 15.65 19.33 15.65 13.25C15.65 8.9 18.23 5.16 21.94 3.51C20.1 3.18 18.1 3 16 3Z" fill="#3b82f6"/>
+          </svg>
+        </div>
+        <span>LUNOVA</span>
+      </div>
+
+      <nav class="nav-menu">
+        <button class="nav-link" onclick="Router.navigate('features')">Features</button>
+        <button class="nav-link" onclick="Router.navigate('templates')">Templates</button>
+        <button class="nav-link" onclick="Router.navigate('pricing')">Pricing</button>
+        <button class="nav-link" onclick="Router.navigate('faq')">FAQ</button>
+      </nav>
+
+      <div style="display:flex; align-items:center; gap:16px;">
+        <button class="btn btn-glass btn-sm" style="border-radius:999px; padding:6px 12px;" title="Language">
+          🌐
+        </button>
+        <button class="btn btn-glass btn-sm" onclick="Router.navigate('login')">Sign In</button>
+        <button class="btn btn-primary btn-sm" onclick="App.continueAsGuest()">Get Started</button>
+      </div>
+    </header>
+
+    <!-- ======================================================= -->
+    <!-- 1. LANDING VIEW (WITH REAL PHOTO ARTWORK)               -->
+    <!-- ======================================================= -->
+    <main id="view-landing" class="view-screen landing-view" style="display:block;">
+      <div style="max-width:1240px; margin:0 auto; padding:0 30px;">
+        
+        <section class="landing-hero">
+          <div class="hero-content">
+            <div class="ai-badge-pill">★ AI-Powered Creation</div>
+            <h1 class="hero-headline">
+              Turn Your<br>Ideas Into <span class="gradient-reality">Reality</span>
+            </h1>
+            <p class="hero-subtext">
+              Create websites, apps, code, games, documents and more — just by chatting. LUNOVA builds it for you.
+            </p>
+            <div class="hero-btn-row">
+              <button class="btn btn-primary btn-lg" onclick="App.continueAsGuest()">Get Started Free →</button>
+              <button class="btn btn-glass btn-lg" onclick="Router.navigate('workspace')">▶ Watch Demo</button>
+            </div>
+            <div class="social-proof-row">
+              <div class="avatar-stack">
+                <div class="av-circle" style="background:#475569;">👨‍💻</div>
+                <div class="av-circle" style="background:#0284c7;">👩‍🎨</div>
+                <div class="av-circle" style="background:#7c3aed;">👨‍🚀</div>
+              </div>
+              <div class="stat-item"><span class="stat-val">1M+</span><span class="stat-lbl">Creators</span></div>
+              <div class="stat-item"><span class="stat-val">100+</span><span class="stat-lbl">Countries</span></div>
+              <div class="stat-item"><span class="stat-val">10x</span><span class="stat-lbl">Faster</span></div>
+              <div class="stat-item"><span class="stat-val">4.9★</span><span class="stat-lbl">User Rating</span></div>
+            </div>
+          </div>
+
+          <!-- Real Floating Studio Graphic from Image 1 -->
+          <div class="landing-real-studio-box" onclick="Router.navigate('workspace')" title="Click to launch interactive AI Workspace">
+            <img src="assets/thumbs/landing-floating-studio.jpg" alt="LUNOVA AI Studio Workspace">
+          </div>
+        </section>
+
+        <!-- Horizontal Category Strip (Image 1) -->
+        <div class="category-selector-strip">
+          <div class="cat-strip-card" onclick="App.launchFromCategory('Websites')">
+            <div class="cat-strip-icon">💻</div>
+            <div>
+              <div class="cat-strip-title">Websites</div>
+              <div class="cat-strip-desc">Modern & responsive</div>
+            </div>
+          </div>
+          <div class="cat-strip-card" onclick="App.launchFromCategory('Code')">
+            <div class="cat-strip-icon">&lt;/&gt;</div>
+            <div>
+              <div class="cat-strip-title">Code</div>
+              <div class="cat-strip-desc">Any language</div>
+            </div>
+          </div>
+          <div class="cat-strip-card" onclick="App.launchFromCategory('Apps')">
+            <div class="cat-strip-icon">📱</div>
+            <div>
+              <div class="cat-strip-title">Apps</div>
+              <div class="cat-strip-desc">Mobile & web</div>
+            </div>
+          </div>
+          <div class="cat-strip-card" onclick="App.launchFromCategory('Games')">
+            <div class="cat-strip-icon">🎮</div>
+            <div>
+              <div class="cat-strip-title">Games</div>
+              <div class="cat-strip-desc">2D & 3D games</div>
+            </div>
+          </div>
+          <div class="cat-strip-card" onclick="App.launchFromCategory('Documents')">
+            <div class="cat-strip-icon">📄</div>
+            <div>
+              <div class="cat-strip-title">Documents</div>
+              <div class="cat-strip-desc">PDF, Word, more</div>
+            </div>
+          </div>
+          <div class="cat-strip-card" onclick="App.launchFromCategory('And More')">
+            <div class="cat-strip-icon">✨</div>
+            <div>
+              <div class="cat-strip-title">And More</div>
+              <div class="cat-strip-desc">Turn any idea</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4 Core Feature Cards (Image 1 Bottom) -->
+        <section class="features-section-landing">
+          <h3>Everything You Need in One Place</h3>
+          <p class="sec-desc">LUNOVA is more than a chatbot. It's your all-in-one creation platform.</p>
+          <div class="features-four-grid">
+            <div class="feat-four-card">
+              <div class="feat-four-icon">⚡</div>
+              <h4>Powered by AI</h4>
+              <p>Advanced AI that understands your ideas and brings them to life with clean code.</p>
+            </div>
+            <div class="feat-four-card">
+              <div class="feat-four-icon">📚</div>
+              <h4>All-in-One</h4>
+              <p>Websites, apps, code, documents, games and more inside a single studio.</p>
+            </div>
+            <div class="feat-four-card">
+              <div class="feat-four-icon">🚀</div>
+              <h4>Fast & Easy</h4>
+              <p>Go from idea to result in minutes, not days, with instant live previews.</p>
+            </div>
+            <div class="feat-four-card">
+              <div class="feat-four-icon">🛡️</div>
+              <h4>Your Projects</h4>
+              <p>Save, edit, download and share your creations anytime with zero vendor lock-in.</p>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+
+    <!-- ======================================================= -->
+    <!-- 2. LOGIN VIEW (IMAGE 2 EXACT MATCH)                     -->
+    <!-- ======================================================= -->
+    <main id="view-login" class="view-screen login-view-wrapper" style="display:none;">
+      <div class="login-left-copy">
+        <div class="login-left-tag">WELCOME BACK</div>
+        <h1 class="login-left-title">Continue<br>Your <span>Vision</span></h1>
+        <p class="login-left-desc">Log in to your LUNOVA account and turn your ideas into reality.</p>
+      </div>
+
+      <div class="glass-panel login-center-card">
+        <div style="text-align:center; margin-bottom:24px;">
+          <div style="font-family:'Jost',sans-serif; font-size:20px; font-weight:800; letter-spacing:2px; color:#fff; margin-bottom:6px;">LUNOVA</div>
+          <h3 style="font-size:22px; font-weight:700; color:#fff; margin-bottom:4px;">Log in to your account</h3>
+          <p style="color:var(--text-secondary); font-size:13px;">Welcome back! Please enter your details to continue.</p>
+        </div>
+
+        <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:18px;">
+          <button class="btn btn-social" onclick="App.handleOAuthMock('Google')" style="background:#fff; color:#000;">
+            <svg viewBox="0 0 24 24" style="width:16px;height:16px;"><path fill="#EA4335" d="M12 5c1.6 0 3 .6 4.1 1.7l3.1-3.1C17.3 1.8 14.8 1 12 1 7.5 1 3.7 3.6 1.9 7.3l3.7 2.9C6.5 7.3 9 5 12 5z"/><path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.7-.2-2.3H12v4.5h6.5c-.3 1.5-1.1 2.8-2.4 3.7l3.7 2.9c2.2-2 3.7-5 3.7-8.8z"/><path fill="#FBBC05" d="M5.6 14.8c-.2-.7-.4-1.5-.4-2.3 0-.8.2-1.6.4-2.3L1.9 7.3C.7 9.7 0 12.4 0 15.3c0 2.9.7 5.6 1.9 8l3.7-2.9z"/><path fill="#34A853" d="M12 23.5c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3 0-5.5-2.3-6.4-5.2L1.9 16.5C3.7 20.2 7.5 23.5 12 23.5z"/></svg>
+            Continue with Google
+          </button>
+          <button class="btn btn-social" onclick="App.handleOAuthMock('GitHub')" style="background:#1e293b; color:#fff;">
+            <svg viewBox="0 0 24 24" fill="currentColor" style="width:16px;height:16px;"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+            Continue with GitHub
+          </button>
+          <button class="btn btn-glass" onclick="Router.navigate('signup')">
+            ✉️ Continue with Email
+          </button>
+        </div>
+
+        <div class="divider-or"><span>or</span></div>
+
+        <form onsubmit="App.handleLogin(event)">
+          <div class="form-group-setting">
+            <input type="email" id="loginEmail" placeholder="✉ Email address" required>
+          </div>
+          <div class="form-group-setting" style="position:relative;">
+            <input type="password" id="loginPassword" placeholder="🔒 Password" required>
+            <button type="button" class="password-toggle-btn" onclick="App.togglePasswordVisibility('loginPassword')">👁️</button>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; font-size:12.5px;">
+            <label class="checkbox-label">
+              <input type="checkbox" checked> Remember me
+            </label>
+            <a class="link-text" onclick="App.showForgotPasswordModal()">Forgot password?</a>
+          </div>
+          <button type="submit" class="btn btn-primary" style="width:100%; border-radius:var(--radius-sm); padding:12px;">Log In →</button>
+        </form>
+
+        <div style="text-align:center; margin-top:20px; font-size:13px; color:var(--text-muted);">
+          Don't have an account? <a class="link-text" onclick="Router.navigate('signup')">Create account</a>
+        </div>
+      </div>
+    </main>
+
+    <!-- ======================================================= -->
+    <!-- AUTHENTICATED PLATFORM SHELL                            -->
+    <!-- (Images 3, 4, 5, 6, 7, 8, 9)                            -->
+    <!-- ======================================================= -->
+    <div id="app-shell" class="app-shell" style="display:none;">
+      <!-- Sidebar Navigation -->
+      <aside class="app-sidebar">
+        <div class="brand-logo" onclick="Router.navigate('dashboard')" style="margin-bottom:24px; padding-left:8px;">
+          <div class="brand-icon-wrap">
+            <svg viewBox="0 0 32 32" fill="none"><path d="M16 3C8.82 3 3 8.82 3 16C3 23.18 8.82 29 16 29C20.46 29 24.38 26.75 26.72 23.32C20.89 23.85 15.65 19.33 15.65 13.25C15.65 8.9 18.23 5.16 21.94 3.51C20.1 3.18 18.1 3 16 3Z" fill="#3b82f6"/></svg>
+          </div>
+          <span>LUNOVA</span>
+        </div>
+
+        <ul class="sidebar-nav-list">
+          <li>
+            <button class="sidebar-item-btn active" id="side-dashboard" onclick="Router.navigate('dashboard')">
+              <span class="item-icon">🏠</span>
+              <span>Home</span>
+            </button>
+          </li>
+          <li>
+            <button class="sidebar-item-btn" id="side-workspace" onclick="Router.navigate('workspace')">
+              <span class="item-icon">✨</span>
+              <span>AI Workspace</span>
+            </button>
+          </li>
+          <li>
+            <button class="sidebar-item-btn" id="side-projects" onclick="Router.navigate('projects')">
+              <span class="item-icon">📁</span>
+              <span>Projects</span>
+            </button>
+          </li>
+          <li>
+            <button class="sidebar-item-btn" id="side-templates" onclick="Router.navigate('templates')">
+              <span class="item-icon">🗂️</span>
+              <span>Templates</span>
+            </button>
+          </li>
+          <li>
+            <button class="sidebar-item-btn" id="side-pricing" onclick="Router.navigate('pricing')">
+              <span class="item-icon">👑</span>
+              <span>Pricing</span>
+            </button>
+          </li>
+          <li>
+            <button class="sidebar-item-btn" id="side-shared" onclick="Router.navigate('shared')">
+              <span class="item-icon">👥</span>
+              <span>Shared Projects</span>
+            </button>
+          </li>
+          <li>
+            <button class="sidebar-item-btn" id="side-settings" onclick="Router.navigate('settings')">
+              <span class="item-icon">⚙️</span>
+              <span>Settings</span>
+            </button>
+          </li>
+        </ul>
+
+        <!-- Upgrade to Pro Card -->
+        <div class="sidebar-pro-card">
+          <div style="font-size:22px; margin-bottom:4px;">👑</div>
+          <h5>Upgrade to Pro</h5>
+          <p>Unlock more power and build without limits.</p>
+          <button class="btn btn-primary btn-sm" style="width:100%;" onclick="Router.navigate('pricing')">Upgrade</button>
+        </div>
+
+        <!-- User profile pill -->
+        <div class="sidebar-user-pill">
+          <div class="profile-avatar-real" style="width:32px; height:32px; border:1px solid #3b82f6;">
+            <img src="assets/thumbs/cosmic-avatar.jpg" alt="Avatar">
+          </div>
+          <div style="flex-grow:1; overflow:hidden; margin-left:6px;">
+            <div style="font-size:12.5px; font-weight:700; color:#fff;" id="sidebarUserName">Alex</div>
+            <div style="font-size:11px; color:var(--text-muted);" id="sidebarUserEmail">user@lunova.com</div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main Canvas Container -->
+      <div class="app-main-canvas">
+        <!-- Top App Bar -->
+        <div class="canvas-topbar">
+          <div class="global-search-bar">
+            <span class="search-icon">🔍</span>
+            <input type="text" placeholder="Search templates, projects, or ask anything...">
+            <span class="kbd-tag">⌘ K</span>
+          </div>
+
+          <div class="canvas-topbar-right">
+            <div class="notification-bell-btn" title="Notifications">
+              🔔
+              <span style="position:absolute; top:6px; right:6px; width:6px; height:6px; background:#3b82f6; border-radius:50%;"></span>
+            </div>
+            <div class="user-plan-header-badge">
+              <div class="profile-avatar-real" style="width:24px; height:24px; border:none;">
+                <img src="assets/thumbs/cosmic-avatar.jpg" alt="Avatar">
+              </div>
+              <div style="font-size:12px; font-weight:600; margin-left:4px;">LUNOVA <span style="color:var(--text-muted); font-size:11px;">Free Plan</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===================================================== -->
+        <!-- 3. DASHBOARD VIEW (IMAGE 3)                           -->
+        <!-- ===================================================== -->
+        <div id="view-dashboard" class="view-screen dashboard-grid-layout" style="display:none;">
+          <div class="dash-main-column">
+            <div class="dash-header-welcome">
+              <h2>Good Evening, <span>Alex</span></h2>
+              <p>Turn your ideas into real websites, apps, code, games and more — just by chatting.</p>
+            </div>
+
+            <!-- Glowing Prompt Composer -->
+            <div class="dash-prompt-card">
+              <span class="dash-prompt-spark">✦</span>
+              <input type="text" class="dash-prompt-input" id="dashPromptInput" placeholder="What do you want to build today?">
+              <button class="btn btn-glass btn-sm" title="Attach file" onclick="alert('File attachment simulation ready.')">📎</button>
+              <button class="btn btn-glass btn-sm" title="Filters" onclick="alert('Synthesis options configured.')">⚙️</button>
+              <button class="dash-prompt-btn" onclick="App.submitDashboardPrompt()">→</button>
+            </div>
+
+            <!-- Prompt Chips -->
+            <div class="dash-prompt-chips">
+              <button class="prompt-chip" onclick="App.fillPrompt('Modern responsive Website with dark glassmorphic styling')">Website</button>
+              <button class="prompt-chip" onclick="App.fillPrompt('Web App with real-time state and telemetry metrics')">Web App</button>
+              <button class="prompt-chip" onclick="App.fillPrompt('Mobile App companion with clean UI cards')">Mobile App</button>
+              <button class="prompt-chip" onclick="App.fillPrompt('2D Canvas Game with responsive keyboard controls')">Game</button>
+              <button class="prompt-chip" onclick="App.fillPrompt('Telemetry Dashboard with live analytics graph')">Dashboard</button>
+              <button class="prompt-chip" onclick="App.fillPrompt('High conversion SaaS Landing Page with pricing tiers')">Landing Page</button>
+              <button class="prompt-chip" onclick="App.fillPrompt('Autonomous AI Tool interface with prompt playground')">AI Tool</button>
+            </div>
+
+            <!-- 5 Quick Action Cards -->
+            <div class="quick-actions-row">
+              <div class="quick-action-card" onclick="App.fillPrompt('Create a modern responsive website')">
+                <div class="quick-action-icon">🌐</div>
+                <div class="quick-action-title">Create a Website</div>
+                <div class="quick-action-sub">Modern & responsive</div>
+              </div>
+              <div class="quick-action-card" onclick="App.fillPrompt('Write clean modular code')">
+                <div class="quick-action-icon">&lt;/&gt;</div>
+                <div class="quick-action-title">Write Code</div>
+                <div class="quick-action-sub">Any language</div>
+              </div>
+              <div class="quick-action-card" onclick="App.fillPrompt('Build a mobile web application')">
+                <div class="quick-action-icon">📱</div>
+                <div class="quick-action-title">Build an App</div>
+                <div class="quick-action-sub">Mobile & web</div>
+              </div>
+              <div class="quick-action-card" onclick="App.fillPrompt('Create an interactive browser game')">
+                <div class="quick-action-icon">🎮</div>
+                <div class="quick-action-title">Create a Game</div>
+                <div class="quick-action-sub">2D or 3D games</div>
+              </div>
+              <div class="quick-action-card" onclick="App.fillPrompt('Generate technical documentation')">
+                <div class="quick-action-icon">📄</div>
+                <div class="quick-action-title">Generate Docs</div>
+                <div class="quick-action-sub">PDF, Word, more</div>
+              </div>
+            </div>
+
+            <!-- Recent Projects Grid (Image 3) -->
+            <div class="recent-projects-heading">
+              <h3>Recent Projects</h3>
+              <a class="link-text" onclick="Router.navigate('projects')">View all →</a>
+            </div>
+            <div class="recent-projects-three-grid" id="dashRecentProjects">
+              <!-- Rendered via App.renderDashboard() with real thumbnails -->
+            </div>
+
+            <!-- Bottom Inspiration Banner (Image 3) -->
+            <div class="astronaut-real-banner">
+              <div style="text-shadow:0 2px 10px rgba(0,0,0,0.9);">
+                <h3 style="font-size:20px; color:#fff; margin-bottom:4px;">Need Inspiration?</h3>
+                <p style="color:#e2e8f0; font-size:13px;">Explore ready-to-use templates and start building faster.</p>
+              </div>
+              <button class="btn btn-primary btn-sm" onclick="Router.navigate('templates')">Browse Templates →</button>
+            </div>
+          </div>
+
+          <!-- Dashboard Right Column (Your Plan & Quick Links) -->
+          <div class="dash-side-column">
+            <!-- Ideas Into Reality Card -->
+            <div class="glass-card" style="padding:22px;">
+              <h4 style="font-size:16px; font-weight:800; color:#fff; margin-bottom:6px;">Ideas Into Reality.</h4>
+              <p style="color:var(--text-secondary); font-size:12.5px; line-height:1.6;">Create. Build. Launch. All in one place.</p>
+            </div>
+
+            <!-- Your Plan Widget -->
+            <div class="your-plan-widget">
+              <div class="your-plan-top">
+                <h4>Your Plan</h4>
+                <span class="template-badge">Free Plan</span>
+              </div>
+              <div class="plan-progress-bar-wrap">
+                <div class="plan-progress-bar">
+                  <div class="plan-progress-fill" style="width:30%;"></div>
+                </div>
+                <div style="display:flex; justify-content:space-between; font-size:11.5px; color:var(--text-muted);">
+                  <span>3 / 10 projects used</span>
+                </div>
+              </div>
+              <ul class="plan-feature-checklist">
+                <li class="active"><span class="check">✓</span> Basic AI models</li>
+                <li class="active"><span class="check">✓</span> 10 projects per month</li>
+                <li class="active"><span class="check">✓</span> Standard templates</li>
+                <li class="inactive"><span class="check">✕</span> Custom domain</li>
+                <li class="inactive"><span class="check">✕</span> Advanced AI models</li>
+                <li class="inactive"><span class="check">✕</span> Priority support</li>
+              </ul>
+              <button class="btn btn-primary" style="width:100%;" onclick="Router.navigate('pricing')">👑 Upgrade to Pro</button>
+            </div>
+
+            <!-- Quick Links Widget -->
+            <div class="quick-links-widget">
+              <h4>Quick Links</h4>
+              <div class="quick-links-list">
+                <div class="quick-link-item" onclick="alert('Help Center opened')">
+                  <span>Help Center</span><span>›</span>
+                </div>
+                <div class="quick-link-item" onclick="alert('Documentation opened')">
+                  <span>Documentation</span><span>›</span>
+                </div>
+                <div class="quick-link-item" onclick="alert('Community discord opened')">
+                  <span>Join Community</span><span>›</span>
+                </div>
+                <div class="quick-link-item" onclick="alert('Feedback form opened')">
+                  <span>Give Feedback</span><span>›</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===================================================== -->
+        <!-- 4. AI WORKSPACE VIEW (STUDIO & REPLIT / LOVABLE)      -->
+        <!-- ===================================================== -->
+        <div id="view-workspace" class="view-screen workspace-wrapper" style="display:none;">
+          <!-- Top Studio Header Bar -->
+          <div class="ws-studio-header">
+            <div class="ws-studio-left">
+              <button class="btn btn-glass btn-sm ws-back-btn" onclick="Router.navigate('dashboard')" title="Back to Dashboard">
+                ← Dashboard
+              </button>
+              <div class="ws-project-info">
+                <span class="ws-project-title" id="wsProjectTitleDisplay" onclick="App.renameActiveProjectPrompt()" title="Click to rename project">My Awesome Project</span>
+                <span class="ws-rename-icon">✏️</span>
+                <span class="ws-save-status">
+                  <span class="status-pulse-dot"></span> Auto-saved
+                </span>
+              </div>
+            </div>
+
+            <!-- Center Studio View Switchers -->
+            <div class="ws-studio-center">
+              <div class="ws-view-switcher">
+                <button class="ws-view-btn active" id="tab-btn-preview" onclick="App.switchWorkspaceTab('preview')">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                  Preview
+                </button>
+                <button class="ws-view-btn" id="tab-btn-split" onclick="App.switchWorkspaceTab('split')">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M12 3v18"/></svg>
+                  Split
+                </button>
+                <button class="ws-view-btn" id="tab-btn-code" onclick="App.switchWorkspaceTab('code')">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                  Code
+                </button>
+              </div>
+            </div>
+
+            <!-- Right Studio Actions -->
+            <div class="ws-studio-right">
+              <!-- Viewport Resizer -->
+              <div class="ws-viewport-group">
+                <button class="ws-vp-btn active" id="vp-desktop" onclick="App.setPreviewViewport('desktop')" title="Desktop View (100%)">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                </button>
+                <button class="ws-vp-btn" id="vp-tablet" onclick="App.setPreviewViewport('tablet')" title="Tablet View (768px)">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+                </button>
+                <button class="ws-vp-btn" id="vp-mobile" onclick="App.setPreviewViewport('mobile')" title="Mobile View (375px)">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+                </button>
+              </div>
+
+              <button class="btn btn-glass btn-sm" onclick="App.reloadPreview()" title="Reload Preview">
+                🔄
+              </button>
+              <button class="btn btn-glass btn-sm" onclick="App.openPreviewInNewWindow()" title="Open Live Preview in New Window">
+                ↗
+              </button>
+              <button class="btn btn-glass btn-sm" id="btnToggleConsole" onclick="App.toggleConsoleDrawer()" title="Toggle Browser DevTools Console">
+                ⚡ Console <span class="console-count-pill" id="consoleCountBadge">0</span>
+              </button>
+              <button class="btn btn-glass btn-sm" onclick="App.downloadProjectZip()" title="Download Full Project Source Code">
+                📦 Export ZIP
+              </button>
+              <button class="btn btn-primary btn-sm ws-deploy-btn" onclick="App.triggerDeployModal()">
+                🚀 Deploy
+              </button>
+            </div>
+          </div>
+
+          <!-- Studio Main Stage (Split / Flexible) -->
+          <div class="ws-main-stage">
+            <!-- Left Chat Pane (Copilot) -->
+            <div class="ws-chat-pane">
+              <div class="ws-chat-header">
+                <div class="ws-ai-avatar">🌙</div>
+                <div class="ws-ai-title-wrap">
+                  <div style="display:flex; align-items:center; gap:8px;">
+                    <h4 style="margin:0;">LUNOVA AI</h4>
+                    <span class="ws-online-tag">● Live Copilot</span>
+                  </div>
+                  <div class="ws-model-badge-row">
+                    <select id="aiModelSelector" class="ws-model-select" onchange="App.handleModelChange()">
+                      <option value="gemini">⚡ Gemini 2.0 Flash</option>
+                      <option value="claude">✦ Claude 3.5 Sonnet</option>
+                      <option value="gpt4o">✨ GPT-4o</option>
+                    </select>
+                  </div>
+                </div>
+                <button class="btn btn-glass btn-sm" style="padding:4px 8px; font-size:11px;" onclick="App.clearActiveProjectChat()" title="Clear Chat History">
+                  Clear
+                </button>
+              </div>
+
+              <!-- Message Stream -->
+              <div class="ws-chat-scroll" id="chatMessagesStream">
+                <!-- Rendered via app.js -->
+              </div>
+
+              <!-- Suggestion Quick Chips -->
+              <div class="ws-quick-chips-wrapper">
+                <div class="ws-quick-chips-scroll">
+                  <button class="ws-chip" onclick="App.insertPromptChip('Add a modern dark/light mode toggle with smooth transitions')">🌙 Dark Mode</button>
+                  <button class="ws-chip" onclick="App.insertPromptChip('Add subtle glassmorphism cards and glowing accent borders')">✨ Glass Glow</button>
+                  <button class="ws-chip" onclick="App.insertPromptChip('Make the layout fully responsive on mobile with a slide-out drawer menu')">📱 Mobile Menu</button>
+                  <button class="ws-chip" onclick="App.insertPromptChip('Add a working interactive contact modal with validation')">📝 Contact Modal</button>
+                  <button class="ws-chip" onclick="App.insertPromptChip('Add smooth micro-interactions, hover elevations and scroll animations')">⚡ Smooth Animations</button>
+                  <button class="ws-chip" onclick="App.insertPromptChip('Change the color theme to emerald green (#10b981) and dark obsidian')">🎨 Emerald Theme</button>
+                </div>
+              </div>
+
+              <!-- Chat Input Bar -->
+              <div class="ws-chat-input-bar">
+                <div class="ws-chat-prompt-box">
+                  <textarea id="chatInputArea" rows="2" placeholder="Describe what you want to build or modify... (Enter to send, Shift+Enter for new line)" oninput="App.autoGrowTextarea(this)"></textarea>
+                  <div class="ws-prompt-tools">
+                    <div style="display:flex; gap:6px; align-items:center;">
+                      <button class="btn btn-glass btn-sm ws-tool-btn" onclick="App.promptNewFile()" title="Create file">+ File</button>
+                      <button class="btn btn-glass btn-sm ws-tool-btn" onclick="App.enhancePrompt()" title="Enhance prompt with AI prompt engineering">✨ Enhance</button>
+                    </div>
+                    <button class="dash-prompt-btn ws-send-btn" onclick="App.sendChatMessage()" title="Send prompt (Enter)">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Stage: Studio Canvas & Code -->
+            <div class="ws-project-pane" id="wsProjectPaneContainer">
+              <!-- Code Studio Pane (Shown in Code & Split mode) -->
+              <div class="ws-code-studio" id="tabContentCode" style="display:none;">
+                <!-- File Tree Sidebar -->
+                <div class="ws-files-sidebar">
+                  <div class="ws-sidebar-header">
+                    <span>EXPLORER</span>
+                    <button class="ws-icon-btn" onclick="App.promptNewFile()" title="New File">+</button>
+                  </div>
+                  <div class="ws-file-tree" id="wsSidebarFileTree">
+                    <!-- Rendered dynamically -->
+                  </div>
+                </div>
+
+                <!-- Code Editor Area -->
+                <div class="ws-editor-main">
+                  <!-- Editor File Tabs -->
+                  <div class="editor-file-tabs" id="editorFileTabsList"></div>
+
+                  <!-- Editor Body with Line Numbers -->
+                  <div class="ws-editor-wrapper">
+                    <div class="ws-line-numbers" id="editorLineNumbers">1</div>
+                    <textarea class="editor-textarea" id="activeCodeEditor" spellcheck="false" oninput="App.handleEditorInput()" onscroll="App.syncEditorScroll()"></textarea>
+                  </div>
+
+                  <!-- Editor Status Footer -->
+                  <div class="ws-editor-statusbar">
+                    <div class="ws-status-left">
+                      <span id="editorSaveText">Saved</span>
+                      <span class="ws-divider">|</span>
+                      <span id="editorStatsText">Lines: 1 • Col: 1</span>
+                    </div>
+                    <div class="ws-status-right">
+                      <span>UTF-8</span>
+                      <span class="ws-divider">|</span>
+                      <span id="editorLanguageBadge">HTML</span>
+                      <button class="btn btn-glass btn-sm" style="padding:2px 8px; font-size:11px;" onclick="App.formatActiveCode()">Prettier</button>
+                      <button class="btn btn-primary btn-sm" style="padding:2px 10px; font-size:11px;" onclick="App.saveCodeChanges()">Save (Ctrl+S)</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Preview Browser Pane (Shown in Preview & Split mode) -->
+              <div class="ws-browser-window" id="tabContentPreview">
+                <div class="browser-titlebar">
+                  <div class="browser-traffic-dots">
+                    <span style="background:#ef4444;"></span>
+                    <span style="background:#f59e0b;"></span>
+                    <span style="background:#10b981;"></span>
+                  </div>
+                  <div class="browser-url-pill" id="previewUrlPill">
+                    <span style="color:#10b981; margin-right:4px;">🔒</span> https://preview.lunova.space/<span id="previewUrlSlug">project</span>
+                  </div>
+                  <div class="browser-quick-tools">
+                    <button class="ws-icon-btn" onclick="App.reloadPreview()" title="Refresh Frame">🔄</button>
+                    <button class="ws-icon-btn" onclick="App.openPreviewInNewWindow()" title="Open in New Tab">↗</button>
+                  </div>
+                </div>
+
+                <!-- Viewport Stage -->
+                <div class="ws-viewport-stage" id="wsViewportStage">
+                  <iframe id="workspacePreviewIframe" sandbox="allow-scripts allow-modals allow-forms allow-same-origin" style="width:100%; height:100%; border:none;"></iframe>
+                </div>
+
+                <!-- DevTools Console Drawer -->
+                <div class="ws-console-drawer" id="wsConsoleDrawer">
+                  <div class="ws-console-header">
+                    <div style="display:flex; align-items:center; gap:8px;">
+                      <span style="font-weight:600; font-size:12px; color:#e2e8f0;">Terminal & Console</span>
+                      <span class="ws-console-badge" id="consoleBadge">0 items</span>
+                    </div>
+                    <div style="display:flex; gap:8px;">
+                      <button class="btn btn-glass btn-sm" style="padding:2px 8px; font-size:11px;" onclick="App.clearConsoleLogs()">Clear</button>
+                      <button class="btn btn-glass btn-sm" style="padding:2px 8px; font-size:11px;" onclick="App.toggleConsoleDrawer()">✕</button>
+                    </div>
+                  </div>
+                  <div class="ws-console-logs" id="wsConsoleLogsStream">
+                    <div class="ws-console-line info">[System] Sandboxed runtime initialized. Live hot-reloading active.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===================================================== -->
+        <!-- 5. MY PROJECTS VIEW (IMAGE 5)                         -->
+        <!-- ===================================================== -->
+        <div id="view-projects" class="view-screen" style="display:none; padding:32px 36px;">
+          <!-- Header Banner with Real Planet Scene -->
+          <div class="cosmic-real-scene-banner">
+            <div class="cosmic-banner-content">
+              <h1 class="cosmic-banner-title">My Projects</h1>
+              <p class="cosmic-banner-sub">All your creations in one place. Websites, apps, games, code, documents and more.</p>
+            </div>
+            <div class="projects-stats-banner">
+              <div class="stat-pill-item">📁 <strong>10</strong> Total Projects</div>
+              <div class="stat-pill-item">🌐 <strong>6</strong> Websites</div>
+              <div class="stat-pill-item">📱 <strong>2</strong> Apps</div>
+              <div class="stat-pill-item">📄 <strong>2</strong> Other</div>
+            </div>
+          </div>
+
+          <!-- Filter & Action Bar -->
+          <div class="projects-filter-bar">
+            <div class="filter-pills-group" id="projectsFilterGroup">
+              <button class="filter-pill-btn active" onclick="App.filterProjectsByCat('All')">All</button>
+              <button class="filter-pill-btn" onclick="App.filterProjectsByCat('Website')">Websites</button>
+              <button class="filter-pill-btn" onclick="App.filterProjectsByCat('Web App')">Web Apps</button>
+              <button class="filter-pill-btn" onclick="App.filterProjectsByCat('Mobile App')">Mobile Apps</button>
+              <button class="filter-pill-btn" onclick="App.filterProjectsByCat('Game')">Games</button>
+              <button class="filter-pill-btn" onclick="App.filterProjectsByCat('Document')">Documents</button>
+              <button class="filter-pill-btn" onclick="App.filterProjectsByCat('Other')">Other</button>
+            </div>
+
+            <div style="display:flex; align-items:center; gap:12px;">
+              <select class="form-input" style="width:140px; padding:6px 10px; font-size:12.5px;">
+                <option>Last Modified ▾</option>
+                <option>Name A-Z</option>
+                <option>Size</option>
+              </select>
+              <button class="btn btn-primary" onclick="App.promptNewProject()">+ New Project</button>
+            </div>
+          </div>
+
+          <!-- 10 Project Cards Grid with Real Visual Artwork -->
+          <div class="projects-cards-five-grid" id="allProjectsRichGrid">
+            <!-- Populated via app.js with real thumbnails -->
+          </div>
+        </div>
+
+        <!-- ===================================================== -->
+        <!-- 6. TEMPLATES VIEW (IMAGE 6)                           -->
+        <!-- ===================================================== -->
+        <div id="view-templates" class="view-screen" style="display:none; padding:32px 36px;">
+          <div class="cosmic-real-scene-banner">
+            <div class="cosmic-banner-content">
+              <h1 class="cosmic-banner-title">Templates</h1>
+              <p class="cosmic-banner-sub">Beautiful, modern templates for any idea. Choose a template, customize it with AI, and launch your project in minutes.</p>
+            </div>
+            <div class="glass-card" style="padding:16px 20px; display:flex; align-items:center; gap:14px; max-width:380px;">
+              <div>
+                <strong style="color:#fff; font-size:13.5px;">Can't find what you need?</strong>
+                <p style="color:var(--text-muted); font-size:11.5px;">Describe your idea and let AI create a custom template for you.</p>
+              </div>
+              <button class="btn btn-primary btn-sm" onclick="App.promptNewProject()">→</button>
+            </div>
+          </div>
+
+          <!-- Category filter pills -->
+          <div class="projects-filter-bar">
+            <div class="filter-pills-group" id="templatesFilterGroup">
+              <button class="filter-pill-btn active" onclick="App.filterTemplates('All')">All Templates</button>
+              <button class="filter-pill-btn" onclick="App.filterTemplates('Website')">Website</button>
+              <button class="filter-pill-btn" onclick="App.filterTemplates('Web App')">Web App</button>
+              <button class="filter-pill-btn" onclick="App.filterTemplates('Mobile App')">Mobile App</button>
+              <button class="filter-pill-btn" onclick="App.filterTemplates('E-Commerce')">E-Commerce</button>
+              <button class="filter-pill-btn" onclick="App.filterTemplates('Portfolio')">Portfolio</button>
+              <button class="filter-pill-btn" onclick="App.filterTemplates('Blog')">Blog</button>
+              <button class="filter-pill-btn" onclick="App.filterTemplates('Business')">Business</button>
+              <button class="filter-pill-btn" onclick="App.filterTemplates('AI Tool')">AI Tool</button>
+              <button class="filter-pill-btn" onclick="App.filterTemplates('Landing Page')">Landing Page</button>
+            </div>
+          </div>
+
+          <!-- 12 Templates Grid with Real Visual Photos -->
+          <div class="templates-grid-twelve" id="allTemplatesTwelveGrid">
+            <!-- Populated via app.js with real thumbnails -->
+          </div>
+        </div>
+
+        <!-- ===================================================== -->
+        <!-- 7. PRICING VIEW (IMAGE 7)                             -->
+        <!-- ===================================================== -->
+        <div id="view-pricing" class="view-screen pricing-wrapper-inner" style="display:none;">
+          <div style="text-align:left; margin-bottom:30px;">
+            <span style="font-size:12px; letter-spacing:2px; color:var(--text-muted); text-transform:uppercase; font-weight:700;">SIMPLE PRICING</span>
+            <h1 style="font-size:38px; font-weight:800; color:#fff; margin:6px 0 10px;">Choose <span style="color:#38bdf8;">Your Plan</span></h1>
+            <p style="color:var(--text-secondary); font-size:15px;">From ideas to powerful websites. Pick the plan that fits your goals and start building with LUNOVA.</p>
+          </div>
+
+          <!-- Feature Pills Bar & 40% OFF Toggle -->
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:36px; flex-wrap:wrap; gap:16px;">
+            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+              <span class="prompt-chip">⚡ Powerful AI</span>
+              <span class="prompt-chip">🗂️ Premium Templates</span>
+              <span class="prompt-chip">☁ Global Deployments</span>
+              <span class="prompt-chip">👥 Active Community</span>
+            </div>
+            <div class="glass-card" style="padding:6px 14px; display:flex; align-items:center; gap:12px;">
+              <span style="font-size:12px; color:#fff; font-weight:600;">Save up to 40% with yearly billing</span>
+              <div class="pricing-toggle-wrap" style="margin:0; padding:4px 8px;">
+                <span style="font-size:12px;">Monthly</span>
+                <input type="checkbox" id="pricingBillingToggle" onchange="App.togglePricingPeriod(this.checked)" checked style="accent-color:#3b82f6;">
+                <span style="font-size:12px; color:#93c5fd; font-weight:700;">Yearly (40% OFF)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3 Pricing Cards (Free, Pro, Business) -->
+          <div class="pricing-three-cards-grid">
+            <!-- Free -->
+            <div class="pricing-card-box">
+              <div class="pricing-plan-icon">📦</div>
+              <h3>Free</h3>
+              <p class="plan-sub">Start building and explore LUNOVA.</p>
+              <div>
+                <span class="price-display-num">$0</span>
+                <span class="price-display-period">/ month</span>
+              </div>
+              <div class="price-billed-yearly">Free forever</div>
+              <button class="btn btn-glass" style="width:100%; margin-bottom:24px;" onclick="App.selectPlanNotice('Free')">Get Started</button>
+              <ul class="plan-feature-checklist">
+                <li class="active"><span class="check">✓</span> Basic AI models</li>
+                <li class="active"><span class="check">✓</span> 10 projects</li>
+                <li class="active"><span class="check">✓</span> Standard templates</li>
+                <li class="active"><span class="check">✓</span> Community support</li>
+                <li class="inactive"><span class="check">✕</span> Custom domain</li>
+              </ul>
+            </div>
+
+            <!-- Pro (Most Popular) -->
+            <div class="pricing-card-box popular">
+              <div class="popular-badge">Most Popular</div>
+              <div class="pricing-plan-icon" style="background:rgba(59,130,246,0.25);">👑</div>
+              <h3>Pro</h3>
+              <p class="plan-sub">For creators, developers and business.</p>
+              <div>
+                <span class="price-display-num" id="priceProVal">$19</span>
+                <span class="price-display-period">/ month</span>
+              </div>
+              <div class="price-billed-yearly" id="priceProBilled">Billed yearly $228</div>
+              <button class="btn btn-primary" style="width:100%; margin-bottom:24px;" onclick="App.selectPlanNotice('Pro')">Upgrade to Pro</button>
+              <ul class="plan-feature-checklist">
+                <li class="active"><span class="check">✓</span> Advanced AI models</li>
+                <li class="active"><span class="check">✓</span> 100 projects</li>
+                <li class="active"><span class="check">✓</span> Premium templates</li>
+                <li class="active"><span class="check">✓</span> Custom domain</li>
+                <li class="active"><span class="check">✓</span> Priority support</li>
+                <li class="active"><span class="check">✓</span> Faster generation</li>
+              </ul>
+            </div>
+
+            <!-- Business -->
+            <div class="pricing-card-box">
+              <div class="pricing-plan-icon">🏢</div>
+              <h3>Business</h3>
+              <p class="plan-sub">For teams and growing companies.</p>
+              <div>
+                <span class="price-display-num" id="priceTeamVal">$49</span>
+                <span class="price-display-period">/ month</span>
+              </div>
+              <div class="price-billed-yearly" id="priceTeamBilled">Billed yearly $588</div>
+              <button class="btn btn-glass" style="width:100%; margin-bottom:24px;" onclick="App.selectPlanNotice('Business')">Upgrade to Business</button>
+              <ul class="plan-feature-checklist">
+                <li class="active"><span class="check">✓</span> Everything in Pro</li>
+                <li class="active"><span class="check">✓</span> Unlimited projects</li>
+                <li class="active"><span class="check">✓</span> Team collaboration</li>
+                <li class="active"><span class="check">✓</span> Advanced AI tools</li>
+                <li class="active"><span class="check">✓</span> White-label option</li>
+                <li class="active"><span class="check">✓</span> Dedicated support</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Bottom Split: Comparison Table & Asteroid Card (Image 7) -->
+          <div class="pricing-bottom-split">
+            <div class="compare-plans-table-wrap">
+              <table class="compare-plans-table">
+                <thead>
+                  <tr>
+                    <th>Features</th>
+                    <th>📦 Free</th>
+                    <th class="col-pro">👑 Pro</th>
+                    <th>🏢 Business</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>AI Models</td><td>Basic</td><td class="col-pro">Advanced</td><td>Advanced + Custom</td></tr>
+                  <tr><td>Projects</td><td>10</td><td class="col-pro">100</td><td>Unlimited</td></tr>
+                  <tr><td>Templates</td><td>Standard</td><td class="col-pro">Premium</td><td>All Templates</td></tr>
+                  <tr><td>Custom Domain</td><td>—</td><td class="col-pro">✓</td><td>✓</td></tr>
+                  <tr><td>Team Collaboration</td><td>—</td><td class="col-pro">—</td><td>✓</td></tr>
+                  <tr><td>Priority Support</td><td>—</td><td class="col-pro">✓</td><td>✓</td></tr>
+                  <tr><td>White-label Option</td><td>—</td><td class="col-pro">—</td><td>✓</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Real Asteroid Card (Image 7) -->
+            <div class="pricing-asteroid-card">
+              <div style="text-shadow:0 2px 10px rgba(0,0,0,0.9);">
+                <h4 style="font-size:18px; color:#fff; margin-bottom:4px;">Need a custom plan?</h4>
+                <p style="color:#cbd5e1; font-size:12px; margin-bottom:14px;">For large teams, enterprises or special requirements, contact us.</p>
+                <button class="btn btn-primary btn-sm" style="width:100%;" onclick="alert('Sales consultation inquiry opened!')">Contact Sales →</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===================================================== -->
+        <!-- 8. SETTINGS VIEW (IMAGE 8 - WITH REAL AVATAR)         -->
+        <!-- ===================================================== -->
+        <div id="view-settings" class="view-screen" style="display:none; padding:32px 36px;">
+          <div style="margin-bottom:24px;">
+            <h1 style="font-size:32px; font-weight:800; color:#fff; margin-bottom:6px;">Settings</h1>
+            <p style="color:var(--text-secondary); font-size:14px;">Manage your account, preferences and more.</p>
+          </div>
+
+          <!-- Tab Navigation Strip (Image 8) -->
+          <div class="settings-tabs-strip">
+            <button class="settings-tab-btn active">👤 Account</button>
+            <button class="settings-tab-btn">🎨 Appearance</button>
+            <button class="settings-tab-btn">🔔 Notifications</button>
+            <button class="settings-tab-btn">🛡️ Security</button>
+            <button class="settings-tab-btn">🔗 Connected Apps</button>
+            <button class="settings-tab-btn">💳 Billing</button>
+            <button class="settings-tab-btn">👥 Team</button>
+            <button class="settings-tab-btn">⚙️ Advanced</button>
+          </div>
+
+          <div class="settings-two-col-layout">
+            <!-- Left Column: Profile & Preferences -->
+            <div>
+              <div class="settings-section-card">
+                <h4>Profile Information</h4>
+                <p class="sec-desc">Update your personal information and profile settings.</p>
+                
+                <div class="profile-avatar-row">
+                  <div class="profile-avatar-real">
+                    <img src="assets/thumbs/cosmic-avatar.jpg" alt="Cosmic Eye Avatar">
+                    <div class="avatar-camera-btn">📷</div>
+                  </div>
+                </div>
+
+                <div class="form-group-setting">
+                  <label>Name</label>
+                  <input type="text" id="settingsUserName" value="Alex">
+                </div>
+                <div class="form-group-setting">
+                  <label>Email</label>
+                  <input type="email" id="settingsUserEmail" value="user@lunova.com">
+                </div>
+                <div class="form-group-setting">
+                  <label>Bio</label>
+                  <textarea id="settingsBio" rows="2">Building the future with AI. ✨</textarea>
+                  <span style="font-size:11px; color:var(--text-muted); float:right;">33/160</span>
+                </div>
+                <button class="btn btn-primary btn-sm" onclick="App.saveProfileSettings()">Save Changes</button>
+              </div>
+
+              <!-- Preferences Card -->
+              <div class="settings-section-card">
+                <h4>Preferences</h4>
+                <p class="sec-desc">Customize your experience on LUNOVA.</p>
+                <div class="form-group-setting">
+                  <label>Language</label>
+                  <select><option>English</option><option>Turkish</option></select>
+                </div>
+                <div class="form-group-setting">
+                  <label>Theme</label>
+                  <select><option>Dark (Default)</option><option>Deep Void</option></select>
+                </div>
+                <div class="form-group-setting">
+                  <label>Code Editor Theme</label>
+                  <select><option>VS Code Dark</option><option>Monokai</option></select>
+                </div>
+                <div class="toggle-switch-row">
+                  <div>
+                    <strong style="font-size:13px; color:#fff;">Auto Save</strong>
+                    <div style="font-size:11.5px; color:var(--text-muted);">Automatically save your work</div>
+                  </div>
+                  <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+                </div>
+                <div class="toggle-switch-row" style="border:none;">
+                  <div>
+                    <strong style="font-size:13px; color:#fff;">Show Tips</strong>
+                    <div style="font-size:11.5px; color:var(--text-muted);">Get helpful tips and suggestions</div>
+                  </div>
+                  <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+                </div>
+              </div>
+
+              <!-- Danger Zone Card -->
+              <div class="settings-section-card" style="border-color:rgba(239,68,68,0.3);">
+                <h4 style="color:#f87171;">Danger Zone</h4>
+                <p class="sec-desc">These actions are permanent and cannot be undone.</p>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <div>
+                    <strong style="font-size:13px; color:#fff;">Delete Account</strong>
+                    <div style="font-size:11.5px; color:var(--text-muted);">Permanently delete your account and all data.</div>
+                  </div>
+                  <button class="btn btn-glass btn-sm" style="color:#f87171; border-color:rgba(239,68,68,0.4);" onclick="App.confirmClearAllData()">Delete Account</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Column: Account Plan, Connected Accounts, Notifications, Security -->
+            <div>
+              <!-- Account Plan Card -->
+              <div class="settings-section-card">
+                <h4>Account Plan</h4>
+                <p class="sec-desc">Manage your subscription and billing details.</p>
+                <div class="glass-card" style="padding:16px; display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+                  <div style="display:flex; align-items:center; gap:12px;">
+                    <span style="font-size:24px;">👑</span>
+                    <div>
+                      <strong style="font-size:14px; color:#fff;">Free Plan</strong>
+                      <div style="font-size:11.5px; color:var(--text-muted);">Great for getting started</div>
+                    </div>
+                  </div>
+                  <button class="btn btn-primary btn-sm" onclick="Router.navigate('pricing')">Upgrade Plan</button>
+                </div>
+              </div>
+
+              <!-- Connected Accounts Card -->
+              <div class="settings-section-card">
+                <h4>Connected Accounts</h4>
+                <p class="sec-desc">Link your accounts for a faster and easier experience.</p>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                  <div style="display:flex; align-items:center; gap:10px;">
+                    <span>🌐</span>
+                    <div><strong>Google</strong><div style="font-size:11.5px; color:var(--text-muted);">Connect your Google account</div></div>
+                  </div>
+                  <button class="btn btn-glass btn-sm" onclick="alert('Google account linked!')">Connect</button>
+                </div>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <div style="display:flex; align-items:center; gap:10px;">
+                    <span>🐙</span>
+                    <div><strong>GitHub</strong><div style="font-size:11.5px; color:var(--text-muted);">Connect your GitHub account</div></div>
+                  </div>
+                  <button class="btn btn-glass btn-sm" onclick="alert('GitHub account linked!')">Connect</button>
+                </div>
+              </div>
+
+              <!-- Notification Settings -->
+              <div class="settings-section-card">
+                <h4>Notification Settings</h4>
+                <p class="sec-desc">Choose what you want to be notified about.</p>
+                <div class="toggle-switch-row">
+                  <div><strong>Project Updates</strong><div style="font-size:11.5px; color:var(--text-muted);">Get notified when your projects are deployed</div></div>
+                  <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+                </div>
+                <div class="toggle-switch-row">
+                  <div><strong>AI Generation</strong><div style="font-size:11.5px; color:var(--text-muted);">Get notified when AI has finished generating</div></div>
+                  <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===================================================== -->
+        <!-- 9. SHARED PROJECTS VIEW (IMAGE 9)                     -->
+        <!-- ===================================================== -->
+        <div id="view-shared" class="view-screen" style="display:none; padding:32px 36px;">
+          <!-- Header Banner -->
+          <div class="cosmic-real-scene-banner">
+            <div class="cosmic-banner-content">
+              <h1 class="cosmic-banner-title">Shared <span style="color:#38bdf8;">Projects</span></h1>
+              <p class="cosmic-banner-sub">Collaborate, share and build together. Share your projects with others, manage permissions, and explore projects shared with you.</p>
+            </div>
+          </div>
+
+          <!-- Filter Pills & Search Bar -->
+          <div class="projects-filter-bar">
+            <div class="filter-pills-group">
+              <button class="filter-pill-btn active">Shared with Others</button>
+              <button class="filter-pill-btn">Shared with Me</button>
+              <button class="filter-pill-btn">Public Projects</button>
+              <button class="filter-pill-btn">Team Projects</button>
+            </div>
+            <div style="display:flex; gap:12px;">
+              <input type="text" class="form-input" placeholder="Search shared projects..." style="width:240px; padding:6px 12px; font-size:12.5px;">
+              <button class="btn btn-primary btn-sm">+ Share Project</button>
+            </div>
+          </div>
+
+          <!-- Two Column Layout: List (Left) + Share Widgets (Right) -->
+          <div class="shared-layout-grid">
+            <!-- Left List of Shared Projects (Image 9) -->
+            <div class="shared-list-wrap">
+              <!-- Item 1 -->
+              <div class="shared-project-item">
+                <div class="shared-item-left">
+                  <div class="shared-item-thumb">
+                    <img src="assets/thumbs/proj-1-portfolio.jpg" alt="LUNOVA Landing Page">
+                  </div>
+                  <div class="shared-item-details">
+                    <h4>LUNOVA Landing Page</h4>
+                    <span class="template-badge">Website</span>
+                    <div class="shared-item-avatars-row" style="margin-top:6px;">
+                      <span>Shared with 3 people</span>
+                      <span>• Updated 2 hours ago</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="shared-item-right">
+                  <span class="role-badge owner">You are the owner</span>
+                  <button class="btn btn-glass btn-sm" onclick="alert('Manage permissions modal opened')">👥 Manage Access</button>
+                  <button class="btn btn-glass btn-sm" onclick="App.openProjectInWorkspace(App.projects[0].id)">Open</button>
+                </div>
+              </div>
+
+              <!-- Item 2 -->
+              <div class="shared-project-item">
+                <div class="shared-item-left">
+                  <div class="shared-item-thumb">
+                    <img src="assets/thumbs/proj-2-aichat.jpg" alt="AI Chat Dashboard">
+                  </div>
+                  <div class="shared-item-details">
+                    <h4>AI Chat Dashboard</h4>
+                    <span class="template-badge">Web App</span>
+                    <div class="shared-item-avatars-row" style="margin-top:6px;">
+                      <span>Shared with 2 people</span>
+                      <span>• Updated 1 day ago</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="shared-item-right">
+                  <span class="role-badge editor">Editor</span>
+                  <button class="btn btn-glass btn-sm" onclick="alert('Manage permissions modal opened')">👥 Manage Access</button>
+                  <button class="btn btn-glass btn-sm" onclick="App.openProjectInWorkspace(App.projects[1] ? App.projects[1].id : App.projects[0].id)">Open</button>
+                </div>
+              </div>
+
+              <!-- Item 3 -->
+              <div class="shared-project-item">
+                <div class="shared-item-left">
+                  <div class="shared-item-thumb">
+                    <img src="assets/thumbs/proj-3-ecommerce.jpg" alt="E-Commerce Store">
+                  </div>
+                  <div class="shared-item-details">
+                    <h4>E-Commerce Store</h4>
+                    <span class="template-badge">Website</span>
+                    <div class="shared-item-avatars-row" style="margin-top:6px;">
+                      <span>Shared with 4 people</span>
+                      <span>• Updated 3 days ago</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="shared-item-right">
+                  <span class="role-badge viewer">Viewer</span>
+                  <button class="btn btn-glass btn-sm" onclick="alert('Manage permissions modal opened')">👥 Manage Access</button>
+                </div>
+              </div>
+
+              <!-- Item 4 -->
+              <div class="shared-project-item">
+                <div class="shared-item-left">
+                  <div class="shared-item-thumb">
+                    <img src="assets/thumbs/proj-7-travel.jpg" alt="Travel Website">
+                  </div>
+                  <div class="shared-item-details">
+                    <h4>Travel Website</h4>
+                    <span class="template-badge">Website</span>
+                    <div class="shared-item-avatars-row" style="margin-top:6px;">
+                      <span>Shared with 1 person</span>
+                      <span>• Updated 5 days ago</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="shared-item-right">
+                  <span class="role-badge editor">Editor</span>
+                  <button class="btn btn-glass btn-sm">👥 Manage Access</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Column Widgets (Image 9) -->
+            <div style="display:flex; flex-direction:column; gap:20px;">
+              <!-- Share a New Project Box -->
+              <div class="glass-card" style="padding:22px;">
+                <h4 style="font-size:15px; font-weight:700; color:#fff; margin-bottom:4px;">Share a New Project</h4>
+                <p style="color:var(--text-secondary); font-size:12.5px; margin-bottom:16px;">Give others access to your project with a link or invite them directly.</p>
+                <button class="btn btn-primary" style="width:100%;" onclick="alert('Select Project to share modal opened')">+ Select Project to Share</button>
+              </div>
+
+              <!-- Recent Invites -->
+              <div class="glass-card" style="padding:20px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                  <strong style="color:#fff; font-size:13.5px;">Recent Invites</strong>
+                  <a class="link-text" style="font-size:11px;">View All</a>
+                </div>
+                <div style="display:flex; flex-direction:column; gap:10px; font-size:12px;">
+                  <div>
+                    <div style="color:#fff; font-weight:600;">alex.dev@gmail.com</div>
+                    <div style="color:var(--text-muted);">Invited to AI Chat Dashboard • <span style="color:#f59e0b;">Pending</span></div>
+                  </div>
+                  <div>
+                    <div style="color:#fff; font-weight:600;">sarah.design@outlook.com</div>
+                    <div style="color:var(--text-muted);">Invited to LUNOVA Landing • <span style="color:#10b981;">Accepted</span></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Public Project Link Box -->
+              <div class="glass-card" style="padding:20px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                  <strong style="color:#fff; font-size:13px;">Public Project Link</strong>
+                  <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+                </div>
+                <div style="display:flex; gap:8px; margin-top:10px;">
+                  <input type="text" class="form-input" value="https://lunova.com/p/your-project" readonly style="font-size:11px; padding:6px 10px;">
+                  <button class="btn btn-glass btn-sm" onclick="navigator.clipboard.writeText('https://lunova.com/p/your-project'); App.showToast('Copied link to clipboard!', 'success');">Copy</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Modals -->
+  <div class="modal-overlay" id="newProjectModal">
+    <div class="glass-panel modal-container">
+      <button class="modal-close-btn" onclick="App.closeModals()">&times;</button>
+      <h3 style="font-size:20px; color:#fff; margin-bottom:8px;">Initialize New Workspace</h3>
+      <form onsubmit="App.handleCreateProjectModal(event)">
+        <div class="form-group-setting">
+          <label>Project Title</label>
+          <input type="text" class="form-input" id="newProjectModalTitle" placeholder="CyberSec Sentinel" required>
+        </div>
+        <div class="form-group-setting">
+          <label>Prompt Description</label>
+          <textarea class="form-input" id="newProjectModalPrompt" rows="3" placeholder="A futuristic dark cybersecurity portal with real-time network attack maps..." required></textarea>
+        </div>
+        <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
+          <button type="button" class="btn btn-glass btn-sm" onclick="App.closeModals()">Cancel</button>
+          <button type="submit" class="btn btn-primary btn-sm">Create & Open ✦</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- New File Modal -->
+  <div class="modal-overlay" id="newFileModal">
+    <div class="glass-panel modal-container">
+      <button class="modal-close-btn" onclick="App.closeModals()">&times;</button>
+      <h3 style="font-size:20px; color:#fff; margin-bottom:8px;">Create New File</h3>
+      <input type="text" class="form-input" id="newFileNameInput" placeholder="about.html" style="margin-bottom:20px;">
+      <div style="display:flex; justify-content:flex-end; gap:10px;">
+        <button type="button" class="btn btn-glass btn-sm" onclick="App.closeModals()">Cancel</button>
+        <button type="button" class="btn btn-primary btn-sm" onclick="App.confirmCreateFile()">Create File</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Deploy Project Modal (Cloudflare Edge Simulation) -->
+  <div class="modal-overlay" id="deployProjectModal">
+    <div class="glass-panel modal-container" style="max-width:520px;">
+      <button class="modal-close-btn" onclick="App.closeModals()">&times;</button>
+      <div style="display:flex; align-items:center; gap:12px; margin-bottom:14px;">
+        <div style="width:40px; height:40px; border-radius:10px; background:linear-gradient(135deg, #f97316, #ea580c); display:flex; align-items:center; justify-content:center; font-size:20px;">
+          ⚡
+        </div>
+        <div>
+          <h3 style="font-size:18px; color:#fff; margin:0;">Deploy to Cloudflare Edge</h3>
+          <p style="font-size:12px; color:var(--text-muted); margin:0;">One-click global static hosting with instant SSL</p>
+        </div>
+      </div>
+
+      <div class="deploy-steps-list" id="deployStepsContainer" style="background:rgba(4,7,16,0.6); border:1px solid var(--border-subtle); border-radius:10px; padding:16px; margin-bottom:18px;">
+        <div class="deploy-step" id="deployStep1">
+          <span class="step-dot"></span>
+          <span class="step-label">Bundling project static assets (HTML, CSS, JS)...</span>
+        </div>
+        <div class="deploy-step" id="deployStep2">
+          <span class="step-dot"></span>
+          <span class="step-label">Provisioning Cloudflare Edge subdomain & SSL...</span>
+        </div>
+        <div class="deploy-step" id="deployStep3">
+          <span class="step-dot"></span>
+          <span class="step-label">Syncing files across 300+ global edge nodes...</span>
+        </div>
+      </div>
+
+      <div id="deployResultBox" style="display:none; background:rgba(16, 185, 129, 0.1); border:1px solid rgba(16, 185, 129, 0.3); border-radius:10px; padding:14px; margin-bottom:18px;">
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+          <span style="color:#10b981; font-weight:700;">✓ Live in Production!</span>
+        </div>
+        <div style="display:flex; align-items:center; justify-content:space-between; background:rgba(0,0,0,0.3); border-radius:6px; padding:8px 12px;">
+          <a href="#" id="deployLiveUrlLink" target="_blank" style="color:#38bdf8; font-family:var(--font-mono); font-size:13px; text-decoration:none;">https://lunova-project.workers.dev</a>
+          <button class="btn btn-glass btn-sm" onclick="App.copyDeployUrl()">Copy</button>
+        </div>
+      </div>
+
+      <div style="display:flex; justify-content:flex-end; gap:10px;">
+        <button type="button" class="btn btn-glass btn-sm" onclick="App.closeModals()">Close</button>
+        <button type="button" class="btn btn-primary btn-sm" id="btnStartDeployAction" onclick="App.executeDeployment()">Deploy Now 🚀</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Rename Project Modal -->
+  <div class="modal-overlay" id="renameProjectModal">
+    <div class="glass-panel modal-container">
+      <button class="modal-close-btn" onclick="App.closeModals()">&times;</button>
+      <h3 style="font-size:18px; color:#fff; margin-bottom:12px;">Rename Project</h3>
+      <input type="text" class="form-input" id="renameProjectInput" placeholder="Project name" style="margin-bottom:20px;">
+      <div style="display:flex; justify-content:flex-end; gap:10px;">
+        <button type="button" class="btn btn-glass btn-sm" onclick="App.closeModals()">Cancel</button>
+        <button type="button" class="btn btn-primary btn-sm" onclick="App.saveProjectRename()">Save Name</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Core Scripts -->
+  <script src="zip.js"></script>
+  <script src="templates.js"></script>
+  <script src="generator.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

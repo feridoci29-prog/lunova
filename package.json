@@ -1,0 +1,18 @@
+{
+  "name": "lunova-platform",
+  "version": "1.0.0",
+  "description": "LUNOVA — Cinematic AI Studio for Websites & Digital Experiences",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "serve": "node server.js"
+  },
+  "keywords": [
+    "lunova",
+    "ai-website-builder",
+    "web-generator",
+    "code-studio"
+  ],
+  "author": "LUNOVA Studio",
+  "license": "MIT"
+}
