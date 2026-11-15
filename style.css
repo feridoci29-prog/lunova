@@ -65,6 +65,45 @@ html, body {
   background: radial-gradient(circle at 50% 10%, #080e24 0%, #03050c 60%, #010206 100%);
 }
 
+/* Radiant Cosmic Moon with Glowing Halos */
+.cosmic-radiant-moon {
+  position: absolute;
+  top: 40px;
+  right: 14%;
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #ffffff 0%, #cbd5e1 35%, #64748b 70%, #1e293b 100%);
+  box-shadow: 
+    0 0 50px 15px rgba(56, 189, 248, 0.45),
+    0 0 110px 35px rgba(99, 102, 241, 0.35),
+    inset -15px -15px 30px rgba(0, 0, 0, 0.85);
+  pointer-events: none;
+  animation: moonPulse 8s ease-in-out infinite alternate;
+  z-index: 1;
+}
+
+@keyframes moonPulse {
+  0% { transform: scale(1); filter: contrast(1.1) brightness(1); }
+  100% { transform: scale(1.04); filter: contrast(1.2) brightness(1.15); box-shadow: 0 0 65px 22px rgba(56, 189, 248, 0.6), 0 0 130px 45px rgba(99, 102, 241, 0.45), inset -15px -15px 30px rgba(0, 0, 0, 0.85); }
+}
+
+/* Sweeping Planetary Horizon Arc */
+.cosmic-horizon-arc {
+  position: absolute;
+  top: -180px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 1500px;
+  height: 480px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at 50% 0%, rgba(56, 189, 248, 0.32) 0%, rgba(99, 102, 241, 0.22) 40%, transparent 75%);
+  border-bottom: 2px solid rgba(56, 189, 248, 0.45);
+  box-shadow: 0 15px 90px rgba(56, 189, 248, 0.4);
+  pointer-events: none;
+  z-index: 1;
+}
+
 .aurora-glow {
   position: absolute;
   border-radius: 50%;

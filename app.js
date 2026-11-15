@@ -244,31 +244,98 @@ const App = {
     let width = canvas.width = window.innerWidth;
     let height = canvas.height = window.innerHeight;
 
+    let mouse = { x: -1000, y: -1000 };
+    window.addEventListener('mousemove', (e) => {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+    });
+
     window.addEventListener('resize', () => {
       width = canvas.width = window.innerWidth;
       height = canvas.height = window.innerHeight;
     });
 
-    const stars = Array.from({ length: 140 }, () => ({
+    const stars = Array.from({ length: 110 }, () => ({
       x: Math.random() * width,
       y: Math.random() * height,
-      r: Math.random() * 1.5 + 0.3,
-      a: Math.random() * 0.8 + 0.2,
-      dy: Math.random() * 0.04 + 0.01
+      r: Math.random() * 1.8 + 0.4,
+      a: Math.random() * 0.7 + 0.3,
+      dx: (Math.random() - 0.5) * 0.2,
+      dy: (Math.random() - 0.5) * 0.2
     }));
+
+    const shootingStars = [];
+    function spawnShootingStar() {
+      if (shootingStars.length < 2 && Math.random() < 0.03) {
+        shootingStars.push({
+          x: Math.random() * width * 0.8 + width * 0.1,
+          y: Math.random() * height * 0.4,
+          len: Math.random() * 80 + 50,
+          speed: Math.random() * 8 + 6,
+          life: 1
+        });
+      }
+    }
 
     function loop() {
       ctx.clearRect(0, 0, width, height);
-      for (const s of stars) {
-        if (!App.settings.reducedMotion) {
-          s.y -= s.dy;
-          if (s.y < 0) s.y = height;
+
+      // Draw constellation links
+      for (let i = 0; i < stars.length; i++) {
+        for (let j = i + 1; j < stars.length; j++) {
+          const dist = Math.hypot(stars[i].x - stars[j].x, stars[i].y - stars[j].y);
+          if (dist < 85) {
+            ctx.strokeStyle = `rgba(56, 189, 248, ${(1 - dist / 85) * 0.14})`;
+            ctx.lineWidth = 0.8;
+            ctx.beginPath();
+            ctx.moveTo(stars[i].x, stars[i].y);
+            ctx.lineTo(stars[j].x, stars[j].y);
+            ctx.stroke();
+          }
         }
+      }
+
+      // Draw and update stars
+      for (const s of stars) {
+        s.x += s.dx;
+        s.y += s.dy;
+        if (s.x < 0) s.x = width;
+        if (s.x > width) s.x = 0;
+        if (s.y < 0) s.y = height;
+        if (s.y > height) s.y = 0;
+
+        // Mouse proximity halo
+        const mouseDist = Math.hypot(s.x - mouse.x, s.y - mouse.y);
+        let alpha = s.a;
+        let radius = s.r;
+        if (mouseDist < 120) {
+          alpha = Math.min(1, alpha + (1 - mouseDist / 120) * 0.5);
+          radius = radius * 1.4;
+        }
+
         ctx.beginPath();
-        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(224, 242, 254, ${s.a})`;
+        ctx.arc(s.x, s.y, radius, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(224, 242, 254, ${alpha})`;
         ctx.fill();
       }
+
+      // Shooting stars
+      spawnShootingStar();
+      for (let i = shootingStars.length - 1; i >= 0; i--) {
+        const ss = shootingStars[i];
+        ctx.strokeStyle = `rgba(125, 211, 252, ${ss.life})`;
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(ss.x, ss.y);
+        ctx.lineTo(ss.x - ss.len * 0.7, ss.y - ss.len * 0.7);
+        ctx.stroke();
+
+        ss.x += ss.speed;
+        ss.y += ss.speed;
+        ss.life -= 0.02;
+        if (ss.life <= 0) shootingStars.splice(i, 1);
+      }
+
       requestAnimationFrame(loop);
     }
     loop();
