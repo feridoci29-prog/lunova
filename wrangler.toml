@@ -1,0 +1,6 @@
+name = "lunovaaa"
+main = "worker.js"
+compatibility_date = "2024-01-01"
+
+[build]
+command = "node bundle_worker.js"

@@ -4,6 +4,7 @@
   "description": "LUNOVA — Cinematic AI Studio for Websites & Digital Experiences",
   "main": "server.js",
   "scripts": {
+    "build": "node bundle_worker.js",
     "start": "node server.js",
     "serve": "node server.js"
   },
