@@ -194,6 +194,17 @@ select {
   padding: 61px 20px 0;
   text-align: center;
 }
+.dw-hero--robot {
+  min-height: 760px;
+  padding: 105px 4% 76px 42%;
+  background: #020408 url("/robot-head-screen.png") center top / cover no-repeat;
+}
+.dw-hero--robot .dw-composer {
+  max-width: 660px;
+}
+.dw-hero--robot h1 {
+  font-size: clamp(46px, 4.8vw, 68px);
+}
 .dw-eyebrow {
   display: flex;
   align-items: center;
@@ -324,6 +335,14 @@ select {
   font-size: 11px;
   color: var(--muted-foreground);
   margin-top: 24px;
+}
+@media (max-width: 900px) {
+  .dw-hero--robot {
+    min-height: 0;
+    padding: clamp(270px, 56vw, 420px) 20px 50px;
+    background-size: auto clamp(270px, 56vw, 420px);
+    background-position: left top;
+  }
 }
 .dw-section {
   padding-top: 68px;
