@@ -55,31 +55,86 @@ html, body {
   overflow-x: hidden;
 }
 
-/* Background Atmosphere */
+/* Background Atmosphere: Next-Gen Animated Aurora & Cyber Grid */
 .cosmos-container {
   position: fixed;
   inset: 0;
   pointer-events: none;
   z-index: 0;
   overflow: hidden;
-  background-color: var(--bg-void);
+  background: radial-gradient(circle at 50% 10%, #080e24 0%, #03050c 60%, #010206 100%);
 }
 
-.cosmos-bg-img {
+.aurora-glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(120px);
+  opacity: 0.45;
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+
+.aurora-1 {
+  width: 700px;
+  height: 500px;
+  background: radial-gradient(circle, #6366f1 0%, rgba(99, 102, 241, 0) 70%);
+  top: -150px;
+  left: 20%;
+  animation: floatAurora1 18s ease-in-out infinite alternate;
+}
+
+.aurora-2 {
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, #38bdf8 0%, rgba(56, 189, 248, 0) 70%);
+  top: 15%;
+  right: -100px;
+  animation: floatAurora2 22s ease-in-out infinite alternate;
+}
+
+.aurora-3 {
+  width: 550px;
+  height: 550px;
+  background: radial-gradient(circle, #a855f7 0%, rgba(168, 85, 247, 0) 70%);
+  bottom: 5%;
+  left: 10%;
+  animation: floatAurora3 20s ease-in-out infinite alternate;
+}
+
+@keyframes floatAurora1 {
+  0% { transform: translate(0, 0) scale(1); opacity: 0.4; }
+  50% { transform: translate(80px, 60px) scale(1.15); opacity: 0.6; }
+  100% { transform: translate(-50px, 40px) scale(0.95); opacity: 0.45; }
+}
+
+@keyframes floatAurora2 {
+  0% { transform: translate(0, 0) scale(1); opacity: 0.35; }
+  50% { transform: translate(-70px, 90px) scale(1.2); opacity: 0.55; }
+  100% { transform: translate(40px, -60px) scale(0.9); opacity: 0.4; }
+}
+
+@keyframes floatAurora3 {
+  0% { transform: translate(0, 0) scale(1); opacity: 0.3; }
+  50% { transform: translate(100px, -80px) scale(1.1); opacity: 0.5; }
+  100% { transform: translate(-60px, 50px) scale(1); opacity: 0.35; }
+}
+
+.cyber-grid-overlay {
   position: absolute;
   inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: 70% center;
-  opacity: 0.55;
-  filter: contrast(1.1) brightness(0.9);
+  background-size: 48px 48px;
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  mask-image: radial-gradient(ellipse at 50% 35%, rgba(0,0,0,1) 20%, rgba(0,0,0,0) 80%);
+  -webkit-mask-image: radial-gradient(ellipse at 50% 35%, rgba(0,0,0,1) 20%, rgba(0,0,0,0) 80%);
+  pointer-events: none;
 }
 
 .cosmos-overlay {
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse at 50% 45%, rgba(5, 9, 22, 0.4), rgba(3, 5, 13, 0.85) 80%);
+  background: radial-gradient(ellipse at 50% 50%, rgba(3, 5, 12, 0.2) 0%, rgba(2, 4, 10, 0.8) 100%);
 }
 
 #starCanvas {
@@ -263,11 +318,11 @@ html, body {
 }
 
 /* =========================================================
-   1. LANDING SCREEN (WITH REAL PHOTO BACKDROP)
+   1. LANDING SCREEN (WITH MODERN AURORA BACKGROUND)
 ========================================================= */
 .landing-view {
   padding-bottom: 100px;
-  background: url('assets/bg/landing-hero-backdrop.jpg') top center / cover no-repeat;
+  background: transparent;
   position: relative;
 }
 
@@ -317,9 +372,101 @@ html, body {
   font-size: 17px;
   color: #cbd5e1;
   line-height: 1.6;
-  margin-bottom: 32px;
-  max-width: 540px;
+  margin-bottom: 28px;
+  max-width: 560px;
   text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+}
+
+/* Interactive Lovable / Bolt.new Hero Prompt Card */
+.landing-hero-prompt-card {
+  background: rgba(10, 16, 34, 0.75);
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  border-radius: var(--radius-lg);
+  padding: 16px 20px;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 30px rgba(56, 189, 248, 0.15);
+  margin-bottom: 24px;
+  transition: all 0.3s ease;
+}
+
+.landing-hero-prompt-card:focus-within {
+  border-color: #38bdf8;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7), 0 0 40px rgba(56, 189, 248, 0.3);
+}
+
+.hero-prompt-inner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(5, 9, 22, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-md);
+  padding: 8px 12px;
+}
+
+.hero-prompt-inner input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 14.5px;
+  outline: none;
+  font-family: inherit;
+}
+
+.hero-prompt-inner input::placeholder {
+  color: #64748b;
+}
+
+.hero-sparkle-icon {
+  font-size: 18px;
+}
+
+.hero-generate-btn {
+  padding: 10px 22px !important;
+  font-size: 13.5px !important;
+  font-weight: 700 !important;
+  background: linear-gradient(135deg, #2563eb, #38bdf8) !important;
+  border: none !important;
+  box-shadow: 0 4px 16px rgba(56, 189, 248, 0.4) !important;
+  white-space: nowrap;
+}
+
+.hero-generate-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 24px rgba(56, 189, 248, 0.6) !important;
+}
+
+.hero-prompt-chips {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+}
+
+.chip-label {
+  font-size: 11.5px;
+  color: #64748b;
+  font-weight: 600;
+}
+
+.hero-chip {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #94a3b8;
+  font-size: 11.5px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.hero-chip:hover {
+  background: rgba(56, 189, 248, 0.15);
+  border-color: rgba(56, 189, 248, 0.35);
+  color: #e0f2fe;
 }
 
 .hero-btn-row {

@@ -9,9 +9,12 @@
 </head>
 <body>
 
-  <!-- Background Cosmos Atmosphere -->
+  <!-- Modern Next-Gen Aurora & Grid Atmosphere -->
   <div class="cosmos-container">
-    <img src="assets/cosmos.jpg" class="cosmos-bg-img" alt="" />
+    <div class="aurora-glow aurora-1"></div>
+    <div class="aurora-glow aurora-2"></div>
+    <div class="aurora-glow aurora-3"></div>
+    <div class="cyber-grid-overlay"></div>
     <canvas id="starCanvas"></canvas>
     <div class="cosmos-overlay"></div>
   </div>
@@ -52,17 +55,41 @@
         
         <section class="landing-hero">
           <div class="hero-content">
-            <div class="ai-badge-pill">★ AI-Powered Creation</div>
+            <div class="ai-badge-pill">
+              <span class="status-pulse-dot" style="margin-right:6px;"></span>
+              ★ Lovable & Replit AI Studio Platform
+            </div>
             <h1 class="hero-headline">
-              Turn Your<br>Ideas Into <span class="gradient-reality">Reality</span>
+              Build Full-Stack Apps <br>
+              <span class="gradient-reality">At the Speed of Thought</span>
             </h1>
             <p class="hero-subtext">
-              Create websites, apps, code, games, documents and more — just by chatting. LUNOVA builds it for you.
+              Describe your idea in plain language. LUNOVA generates complete frontend code, modern CSS, and interactive logic with real-time sandbox preview and one-click cloud deployment.
             </p>
-            <div class="hero-btn-row">
-              <button class="btn btn-primary btn-lg" onclick="App.continueAsGuest()">Get Started Free →</button>
-              <button class="btn btn-glass btn-lg" onclick="Router.navigate('workspace')">▶ Watch Demo</button>
+
+            <!-- Interactive Lovable / Bolt.new Hero Prompt Box -->
+            <div class="landing-hero-prompt-card">
+              <div class="hero-prompt-inner">
+                <span class="hero-sparkle-icon">✨</span>
+                <input type="text" id="landingHeroPromptInput" placeholder="What do you want to build? (e.g. A modern SaaS metrics dashboard with dark mode)..." onkeydown="if(event.key==='Enter') App.launchFromHeroPrompt()">
+                <button class="btn btn-primary hero-generate-btn" onclick="App.launchFromHeroPrompt()">
+                  Build with AI ✦
+                </button>
+              </div>
+              <div class="hero-prompt-chips">
+                <span class="chip-label">Try prompt:</span>
+                <button class="hero-chip" onclick="App.fillHeroPrompt('A futuristic dark cybersecurity portal with real-time network attack maps')">🛡️ CyberSec Sentinel</button>
+                <button class="hero-chip" onclick="App.fillHeroPrompt('A minimalist artisan cafe and bakery with interactive menu tabs and reservation system')">☕ Aura Artisan Café</button>
+                <button class="hero-chip" onclick="App.fillHeroPrompt('A dark spatial portfolio for a creative design technologist with project gallery')">👨‍💻 Creative Technologist</button>
+                <button class="hero-chip" onclick="App.fillHeroPrompt('A sleek high-end audio gear e-commerce shop with working shopping cart and filters')">🎧 Lumina Audio Store</button>
+              </div>
             </div>
+
+            <div class="hero-btn-row" style="margin-top:20px;">
+              <button class="btn btn-glass btn-lg" onclick="App.continueAsGuest()">Explore Studio Dashboard →</button>
+              <button class="btn btn-glass btn-lg" onclick="Router.navigate('workspace')">▶ Launch Live Workspace</button>
+            </div>
+
             <div class="social-proof-row">
               <div class="avatar-stack">
                 <div class="av-circle" style="background:#475569;">👨‍💻</div>

@@ -341,6 +341,66 @@ const App = {
     Router.navigate('dashboard');
   },
 
+  fillHeroPrompt(text) {
+    const input = document.getElementById('landingHeroPromptInput');
+    if (input) {
+      input.value = text;
+      input.focus();
+    }
+  },
+
+  launchFromHeroPrompt() {
+    const input = document.getElementById('landingHeroPromptInput');
+    const prompt = input ? input.value.trim() : '';
+    if (!prompt) {
+      this.showToast('Please type an idea to build!', 'info');
+      if (input) input.focus();
+      return;
+    }
+
+    this.user.isLoggedIn = true;
+    this.saveUserSettings();
+
+    const synth = LunovaGenerator.synthesizeProject(prompt);
+    const newProj = {
+      id: 'proj-' + Date.now(),
+      title: synth.title,
+      category: synth.category,
+      accent: synth.accent,
+      accentName: synth.accentName,
+      files: synth.files,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      chatHistory: [
+        {
+          role: 'assistant',
+          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          text: `Welcome! I've synthesized "${synth.title}" based on your prompt: "${prompt}". You can inspect code, tweak styles, or ask for adjustments.`,
+          thoughtProcess: [
+            `Analyzed vision: "${prompt}"`,
+            `Generated ${synth.files.length} production-ready files`,
+            `Configured ${synth.accentName} theme palette`,
+            'Mounted live sandbox preview'
+          ],
+          fileChanges: synth.files.map(f => ({ name: f.name, linesAdded: Math.floor(Math.random() * 30) + 12 })),
+          projectCard: {
+            title: synth.title,
+            type: `${synth.category} • ${synth.files.length} files`,
+            status: 'Live & Ready'
+          }
+        }
+      ]
+    };
+
+    this.projects.unshift(newProj);
+    this.activeProjectId = newProj.id;
+    this.saveProjects();
+
+    Router.navigate('workspace');
+    this.renderWorkspace();
+    this.showToast(`"${synth.title}" built and opened in Studio! ✦`, 'success');
+  },
+
   togglePasswordVisibility(id) {
     const el = document.getElementById(id);
     if (el) el.type = el.type === 'password' ? 'text' : 'password';
